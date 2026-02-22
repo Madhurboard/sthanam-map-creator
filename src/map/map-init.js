@@ -211,21 +211,38 @@ export function updateArtisticStyle(theme) {
 	if (currentArtisticThemeName === theme.name) return;
 
 	currentArtisticThemeName = theme.name;
-	const style = generateMapLibreStyle(theme);
 
-	if (styleChangeInProgress) {
-		pendingArtisticStyle = style;
-		pendingArtisticThemeName = theme.name;
-		try { artisticMap.setStyle(style); } catch (e) { }
-		return;
-	}
+	if (!artisticMap.getStyle() || !artisticMap.getStyle().sources.openfreemap) {
+		const style = generateMapLibreStyle(theme);
+		if (styleChangeInProgress) {
+			pendingArtisticStyle = style;
+			pendingArtisticThemeName = theme.name;
+			try { artisticMap.setStyle(style); } catch (e) { }
+			return;
+		}
 
-	styleChangeInProgress = true;
-	try {
-		artisticMap.setStyle(style);
-	} catch (e) {
-		pendingArtisticStyle = style;
-		pendingArtisticThemeName = theme.name;
+		styleChangeInProgress = true;
+		try {
+			artisticMap.setStyle(style);
+		} catch (e) {
+			pendingArtisticStyle = style;
+			pendingArtisticThemeName = theme.name;
+		}
+	} else {
+		try {
+			artisticMap.setPaintProperty('background', 'background-color', theme.bg);
+			artisticMap.setPaintProperty('water', 'fill-color', theme.water);
+			artisticMap.setPaintProperty('park', 'fill-color', theme.parks);
+			artisticMap.setPaintProperty('road-default', 'line-color', theme.road_default);
+			artisticMap.setPaintProperty('road-residential', 'line-color', theme.road_residential);
+			artisticMap.setPaintProperty('road-tertiary', 'line-color', theme.road_tertiary);
+			artisticMap.setPaintProperty('road-secondary', 'line-color', theme.road_secondary);
+			artisticMap.setPaintProperty('road-primary', 'line-color', theme.road_primary);
+			artisticMap.setPaintProperty('road-motorway', 'line-color', theme.road_motorway);
+		} catch (e) {
+			const style = generateMapLibreStyle(theme);
+			artisticMap.setStyle(style);
+		}
 	}
 }
 

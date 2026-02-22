@@ -86,13 +86,26 @@ async function captureMapSnapshot() {
 					await drawMarkerToCtx(ctx, x, y, color);
 				}
 
-				const data = canvas.toDataURL('image/png');
+				if (state.overlayBgType === 'vignette') {
+					const themeColor = getSelectedArtisticTheme().background || getSelectedArtisticTheme().bg || '#ffffff';
+					const colorSolid = hexToRgba(themeColor, 1);
+					const colorTrans = hexToRgba(themeColor, 0);
+					const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+					gradient.addColorStop(0, colorSolid);
+					gradient.addColorStop(0.03, colorSolid);
+					gradient.addColorStop(0.2, colorTrans);
+					gradient.addColorStop(0.8, colorTrans);
+					gradient.addColorStop(0.97, colorSolid);
+					gradient.addColorStop(1, colorSolid);
+					ctx.fillStyle = gradient;
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+				}
 
 				artisticContainer.style.width = originalWidth;
 				artisticContainer.style.height = originalHeight;
 				artisticMap.resize();
 
-				return data;
+				return canvas;
 			} catch (e) {
 				console.error('Gagal capture Artistic Map:', e);
 			}
@@ -135,7 +148,22 @@ async function captureMapSnapshot() {
 				await drawMarkerToCtx(ctx, x, y, color);
 			}
 
-			return canvas.toDataURL('image/png');
+			if (state.overlayBgType === 'vignette') {
+				const themeColor = getSelectedTheme().background || getSelectedTheme().bg || '#ffffff';
+				const colorSolid = hexToRgba(themeColor, 1);
+				const colorTrans = hexToRgba(themeColor, 0);
+				const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+				gradient.addColorStop(0, colorSolid);
+				gradient.addColorStop(0.03, colorSolid);
+				gradient.addColorStop(0.2, colorTrans);
+				gradient.addColorStop(0.8, colorTrans);
+				gradient.addColorStop(0.97, colorSolid);
+				gradient.addColorStop(1, colorSolid);
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			}
+
+			return canvas;
 		} catch (e) {
 			console.error('Gagal capture Leaflet Map:', e);
 		}
@@ -176,7 +204,7 @@ export async function exportToPNG(element, filename, statusElement, options = {}
 	const originalTransition = element.style.transition;
 
 	try {
-		const snapshot = await captureMapSnapshot();
+		const snapshotCanvas = await captureMapSnapshot();
 		const targetWidth = state.width;
 		const targetHeight = state.height;
 
@@ -256,17 +284,15 @@ export async function exportToPNG(element, filename, statusElement, options = {}
 					const matEnabled = state.matEnabled;
 					const matWidthLogical = matEnabled ? (state.matWidth / scale) : 0;
 
-					if (snapshot) {
-						const img = clonedDoc.createElement('img');
-						img.src = snapshot;
-						img.style.position = 'absolute';
-						img.style.top = `${matWidthLogical}px`;
-						img.style.left = `${matWidthLogical}px`;
-						img.style.width = `${logicalContainerWidth - 2 * matWidthLogical}px`;
-						img.style.height = `${logicalContainerHeight - 2 * matWidthLogical}px`;
-						img.style.objectFit = 'cover';
-						img.style.zIndex = '0';
-						img.style.display = 'block';
+					if (snapshotCanvas) {
+						snapshotCanvas.style.position = 'absolute';
+						snapshotCanvas.style.top = `${matWidthLogical}px`;
+						snapshotCanvas.style.left = `${matWidthLogical}px`;
+						snapshotCanvas.style.width = `${logicalContainerWidth - 2 * matWidthLogical}px`;
+						snapshotCanvas.style.height = `${logicalContainerHeight - 2 * matWidthLogical}px`;
+						snapshotCanvas.style.objectFit = 'cover';
+						snapshotCanvas.style.zIndex = '0';
+						snapshotCanvas.style.display = 'block';
 
 						if (matEnabled && state.matShowBorder) {
 							const borderDiv = clonedDoc.createElement('div');
@@ -284,28 +310,12 @@ export async function exportToPNG(element, filename, statusElement, options = {}
 							clonedContainer.appendChild(borderDiv);
 						}
 
-						clonedContainer.prepend(img);
+						clonedContainer.prepend(snapshotCanvas);
 					}
 
 					const vignette = clonedDoc.querySelector('#vignette-overlay');
 					if (vignette) {
-						vignette.style.position = 'absolute';
-						vignette.style.top = `${matWidthLogical}px`;
-						vignette.style.left = `${matWidthLogical}px`;
-						vignette.style.width = `${logicalContainerWidth - 2 * matWidthLogical}px`;
-						vignette.style.height = `${logicalContainerHeight - 2 * matWidthLogical}px`;
-						vignette.style.pointerEvents = 'none';
-						vignette.style.zIndex = '5';
-
-				if (state.overlayBgType === 'vignette') {
-					vignette.style.display = 'block';
-					vignette.style.opacity = '1';
-					const colorSolid = hexToRgba(themeColor, 1);
-					const colorTrans = hexToRgba(themeColor, 0);
-					vignette.style.background = `linear-gradient(to bottom, ${colorSolid} 0%, ${colorSolid} 3%, ${colorTrans} 20%, ${colorTrans} 80%, ${colorSolid} 97%, ${colorSolid} 100%)`;
-				} else {
-					vignette.style.display = 'none';
-				}
+						vignette.style.display = 'none';
 					}
 				}
 
