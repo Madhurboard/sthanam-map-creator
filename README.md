@@ -105,8 +105,8 @@ Follow these steps to get a local copy up and running.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/dimartarmizi/map-to-poster.git
-   cd map-to-poster
+	git clone https://github.com/Madhurboard/sthanam-map-creator.git
+	cd sthanam-map-creator
    ```
 
 2. **Install dependencies**
@@ -135,7 +135,11 @@ Follow these steps to get a local copy up and running.
 
 ## 📧 Contact
 
-If you have any questions, suggestions, or just want to reach out, feel free to contact me at [dimartarmizi@gmail.com](mailto:dimartarmizi@gmail.com).
+If you have any questions, suggestions, or just want to reach out, feel free to open an issue in the repository.
+
+### References
+*   [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/)
+*   [Stadia Maps](https://stadiamaps.com/)
 
 ## ⚖️ License
 

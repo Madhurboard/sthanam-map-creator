@@ -3,7 +3,7 @@ import { artisticThemes } from './artistic-themes.js';
 
 let observers = [];
 
-const STORAGE_KEY = 'map-to-poster:settings';
+const STORAGE_KEY = 'sthanam:settings';
 
 export const defaultState = {
 	city: "MUMBAI",
