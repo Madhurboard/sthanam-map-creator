@@ -85,13 +85,74 @@ export function setupControls() {
 	}
 
 	if (themeSelect) {
-		themeSelect.innerHTML = Object.keys(themes)
-			.sort((a, b) => (themes[a].name || a).localeCompare(themes[b].name || b))
-			.map(key => {
-				const t = themes[key];
-				return `<option value="${key}">${t.name || key}</option>`;
-			})
-			.join('\n');
+		const themeDropdown = document.querySelector('.theme-picker-dropdown');
+		if (themeDropdown) {
+			themeDropdown.innerHTML = Object.keys(themes)
+				.sort((a, b) => (themes[a].name || a).localeCompare(themes[b].name || b))
+				.map(key => {
+					const t = themes[key];
+					// Use a simple heuristic or defined colors for standard theme swatches
+					const p1 = t.bg || '#ffffff';
+					const p2 = t.water || '#aadaff';
+					const p3 = t.road || '#cccccc';
+					return `
+						<button type="button" class="w-full text-left p-3 hover:bg-slate-50 rounded-xl transition-colors theme-option flex items-center space-x-3" data-value="${key}">
+							<div class="flex -space-x-1">
+								<span class="w-5 h-5 rounded-full ring-1 ring-slate-200" style="background:${p1}"></span>
+								<span class="w-5 h-5 rounded-full ring-1 ring-slate-200" style="background:${p2}"></span>
+								<span class="w-5 h-5 rounded-full ring-1 ring-slate-200" style="background:${p3}"></span>
+							</div>
+							<span class="text-sm font-medium text-slate-700">${t.name || key}</span>
+						</button>`;
+				})
+				.join('\n');
+		}
+
+		// Setup Theme Picker Toggle
+		const themeContainer = document.querySelector('.theme-picker-container');
+		if (themeContainer) {
+			const btn = themeContainer.querySelector('.theme-picker-btn');
+			const dropdown = themeContainer.querySelector('.theme-picker-dropdown');
+			const hiddenInput = document.getElementById('theme-select');
+			
+			btn.addEventListener('click', (e) => {
+				e.stopPropagation();
+				const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+				
+				// Close font dropdowns to avoid overlap
+				document.querySelectorAll('.font-picker-dropdown').forEach(d => {
+					d.classList.add('hidden');
+					d.previousElementSibling?.setAttribute('aria-expanded', 'false');
+				});
+
+				dropdown.classList.toggle('hidden', isExpanded);
+				btn.setAttribute('aria-expanded', !isExpanded);
+			});
+
+			const options = dropdown.querySelectorAll('.theme-option');
+			options.forEach(option => {
+				option.addEventListener('click', (e) => {
+					e.stopPropagation();
+					const val = option.dataset.value;
+					hiddenInput.value = val;
+					
+					// Trigger change logic
+					clearTimeout(_themeChangeTimer);
+					_themeChangeTimer = setTimeout(() => applyThemeChange(val), 120);
+					
+					dropdown.classList.add('hidden');
+					btn.setAttribute('aria-expanded', 'false');
+				});
+			});
+
+			// Close on click outside
+			document.addEventListener('click', (e) => {
+				if (!e.target.closest('.theme-picker-container')) {
+					dropdown.classList.add('hidden');
+					btn.setAttribute('aria-expanded', 'false');
+				}
+			});
+		}
 	}
 
 	const labelsToggle = document.getElementById('show-labels-toggle');
@@ -150,10 +211,28 @@ export function setupControls() {
 		});
 	}
 
-	if (markerIconSelect) {
-		markerIconSelect.addEventListener('change', (e) => {
-			updateState({ markerIcon: e.target.value });
-			updateMarkerStyles(state);
+	const pinOptions = document.querySelectorAll('.pin-option');
+	if (markerIconSelect && pinOptions.length > 0) {
+		pinOptions.forEach(btn => {
+			btn.addEventListener('click', (e) => {
+				e.preventDefault();
+				const val = btn.dataset.value;
+				markerIconSelect.value = val;
+				
+				// Update UI immediately for snappier feel
+				pinOptions.forEach(p => {
+					if (p.dataset.value === val) {
+						p.classList.add('border-accent', 'bg-accent-light', 'text-accent');
+						p.classList.remove('border-slate-200', 'bg-white', 'text-slate-400');
+					} else {
+						p.classList.remove('border-accent', 'bg-accent-light', 'text-accent');
+						p.classList.add('border-slate-200', 'bg-white', 'text-slate-400');
+					}
+				});
+
+				updateState({ markerIcon: val });
+				updateMarkerStyles(state);
+			});
 		});
 	}
 
@@ -439,6 +518,69 @@ export function setupControls() {
 		});
 	}
 
+	// Setup custom font pickers
+	const fontPickers = document.querySelectorAll('.font-picker-container');
+	
+	fontPickers.forEach(picker => {
+		const btn = picker.querySelector('.font-picker-btn');
+		const dropdown = picker.querySelector('.font-picker-dropdown');
+		const hiddenInput = picker.querySelector('input[type="hidden"]');
+		const targetLabel = btn.querySelector('span');
+		const targetType = picker.dataset.target; // city-font, country-font, coords-font
+
+		if (!btn || !dropdown) return;
+
+		// Toggle dropdown
+		btn.addEventListener('click', (e) => {
+			e.stopPropagation();
+			const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+			
+			// Close all other dropdowns
+			document.querySelectorAll('.font-picker-dropdown').forEach(d => {
+				if (d !== dropdown) {
+					d.classList.add('hidden');
+					d.previousElementSibling?.setAttribute('aria-expanded', 'false');
+				}
+			});
+
+			dropdown.classList.toggle('hidden', isExpanded);
+			btn.setAttribute('aria-expanded', !isExpanded);
+		});
+
+		// Handle option selection
+		const options = dropdown.querySelectorAll('.font-option');
+		options.forEach(option => {
+			option.addEventListener('click', (e) => {
+				e.stopPropagation();
+				const val = option.dataset.value;
+				const text = option.textContent;
+				const fontFamily = option.style.fontFamily;
+				
+				hiddenInput.value = val;
+				targetLabel.textContent = text;
+				btn.style.fontFamily = fontFamily;
+				
+				// Update state based on target
+				if (targetType === 'city-font') updateState({ cityFont: val });
+				else if (targetType === 'country-font') updateState({ countryFont: val });
+				else if (targetType === 'coords-font') updateState({ coordsFont: val });
+
+				dropdown.classList.add('hidden');
+				btn.setAttribute('aria-expanded', 'false');
+			});
+		});
+	});
+
+	// Close font dropdowns when clicking outside
+	document.addEventListener('click', (e) => {
+		if (!e.target.closest('.font-picker-container')) {
+			document.querySelectorAll('.font-picker-dropdown').forEach(d => {
+				d.classList.add('hidden');
+				d.previousElementSibling?.setAttribute('aria-expanded', 'false');
+			});
+		}
+	});
+
 
 	function sanitizeCoordInput(v) {
 		if (!v) return v;
@@ -481,16 +623,6 @@ export function setupControls() {
 			if (t && t.tileUrl) updateMapTheme(t.tileUrl);
 			invalidateMapSize();
 		}
-	}
-
-	if (themeSelect) {
-		const onThemeInput = (e) => {
-			const v = e.target.value;
-			clearTimeout(_themeChangeTimer);
-			_themeChangeTimer = setTimeout(() => applyThemeChange(v), 120);
-		};
-		themeSelect.addEventListener('change', onThemeInput);
-		themeSelect.addEventListener('input', onThemeInput);
 	}
 
 
@@ -644,12 +776,112 @@ export function setupControls() {
 		document.addEventListener('touchend', endDrag);
 	}
 
+	// Liquid Glass Mobile Tab Logic
+	const sidebar = document.getElementById('main-sidebar');
+	const tabBtns = document.querySelectorAll('.mobile-tab-btn');
+	const tabPanes = document.querySelectorAll('.tab-pane');
+
+	if (sidebar && tabBtns.length > 0) {
+		let activeTab = null;
+
+		tabBtns.forEach(btn => {
+			btn.addEventListener('click', () => {
+				const target = btn.dataset.tabTarget;
+				
+				if (activeTab === target) {
+					// Toggle off if clicking the active tab
+					activeTab = null;
+					document.body.classList.remove('mobile-tab-active');
+					sidebar.classList.remove('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
+					sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+					
+					// Reset button styles
+					tabBtns.forEach(b => {
+						b.classList.remove('text-accent');
+						b.classList.add('text-slate-400');
+					});
+				} else {
+					// Switch to new tab
+					activeTab = target;
+					document.body.classList.add('mobile-tab-active');
+					
+					// Update buttons
+					tabBtns.forEach(b => {
+						if (b.dataset.tabTarget === target) {
+							b.classList.add('text-accent');
+							b.classList.remove('text-slate-400');
+						} else {
+							b.classList.remove('text-accent');
+							b.classList.add('text-slate-400');
+						}
+					});
+					
+					// Show correct panes, hide others
+					tabPanes.forEach(pane => {
+						if (pane.dataset.tabContent === target) {
+							pane.classList.remove('max-md:hidden');
+						} else {
+							pane.classList.add('max-md:hidden');
+						}
+					});
+					
+					// Reveal sidebar container explicitly for mobile
+					sidebar.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+					sidebar.classList.add('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
+				}
+			});
+		});
+
+		// Click outside to dismiss on mobile
+		document.addEventListener('click', (e) => {
+			if (window.innerWidth >= 768 || !activeTab) return;
+			
+			// If click is not inside the sidebar and not on a tab button
+			if (!sidebar.contains(e.target) && !e.target.closest('.mobile-tab-btn')) {
+				activeTab = null;
+				document.body.classList.remove('mobile-tab-active');
+				sidebar.classList.remove('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
+				sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+				
+				tabBtns.forEach(b => {
+					b.classList.remove('text-accent');
+					b.classList.add('text-slate-400');
+				});
+			}
+		});
+	}
+
 	return (currentState) => {
 		if (cityOverrideInput) cityOverrideInput.value = currentState.cityOverride || '';
 		if (countryOverrideInput) countryOverrideInput.value = currentState.countryOverride || '';
-		if (cityFontSelect) cityFontSelect.value = currentState.cityFont;
-		if (countryFontSelect) countryFontSelect.value = currentState.countryFont;
-		if (coordsFontSelect) coordsFontSelect.value = currentState.coordsFont;
+		
+		// Sync custom font pickers
+		const syncFontPicker = (target, val) => {
+			const picker = document.querySelector(`.font-picker-container[data-target="${target}"]`);
+			if (!picker) return;
+			const btn = picker.querySelector('.font-picker-btn');
+			const hiddenInput = picker.querySelector('input[type="hidden"]');
+			const targetLabel = btn.querySelector('span');
+			const options = picker.querySelectorAll('.font-option');
+			
+			hiddenInput.value = val;
+			let found = false;
+			options.forEach(opt => {
+				if (opt.dataset.value === val) {
+					targetLabel.textContent = opt.textContent;
+					btn.style.fontFamily = opt.style.fontFamily;
+					found = true;
+				}
+			});
+			if (!found) { // Fallback if font missing from list
+				targetLabel.textContent = val.split(',')[0].replace(/['"]/g, '');
+				btn.style.fontFamily = val;
+			}
+		};
+
+		syncFontPicker('city-font', currentState.cityFont);
+		syncFontPicker('country-font', currentState.countryFont);
+		syncFontPicker('coords-font', currentState.coordsFont);
 
 		const EYE_OPEN_SVG = `<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
 		const EYE_OFF_SVG = `<svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>`;
@@ -706,7 +938,25 @@ export function setupControls() {
 			if (labelsControl) labelsControl.classList.add('hidden');
 		}
 
-		themeSelect.value = currentState.theme;
+		// Sync Standard Theme Picker
+		const themePickerContainer = document.querySelector('.theme-picker-container[data-target="map-theme"]');
+		if (themePickerContainer) {
+			const hiddenInput = document.getElementById('theme-select');
+			const label = themePickerContainer.querySelector('.selected-theme-name');
+			const swatches = themePickerContainer.querySelectorAll('.selected-theme-swatches span');
+			
+			const currentThemeKey = currentState.theme;
+			const t = themes[currentThemeKey];
+			
+			if (hiddenInput) hiddenInput.value = currentThemeKey;
+			if (label && t) label.textContent = t.name || currentThemeKey;
+			
+			if (swatches.length >= 3 && t) {
+				swatches[0].style.background = t.bg || '#ffffff';
+				swatches[1].style.background = t.water || '#aadaff';
+				swatches[2].style.background = t.road || '#cccccc';
+			}
+		}
 		if (artisticMainGrid) {
 			const mainKeys = new Set(['cyber_noir', 'golden_era', 'mangrove_maze']);
 			const selectedKey = currentState.artisticTheme;
@@ -774,6 +1024,19 @@ export function setupControls() {
 		}
 
 		if (markerIconSelect) markerIconSelect.value = currentState.markerIcon || 'pin';
+		const pinOpts = document.querySelectorAll('.pin-option');
+		if (pinOpts.length) {
+			const currentIcon = currentState.markerIcon || 'pin';
+			pinOpts.forEach(p => {
+				if (p.dataset.value === currentIcon) {
+					p.classList.add('border-accent', 'bg-accent-light', 'text-accent');
+					p.classList.remove('border-slate-200', 'bg-white', 'text-slate-400');
+				} else {
+					p.classList.remove('border-accent', 'bg-accent-light', 'text-accent');
+					p.classList.add('border-slate-200', 'bg-white', 'text-slate-400');
+				}
+			});
+		}
 		if (markerSizeSlider) {
 			const sizePx = Math.round((currentState.markerSize || 1) * 40);
 			markerSizeSlider.value = sizePx;
