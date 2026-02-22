@@ -8,6 +8,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@vercel/analytics": "^1.6.1",
 		"html2canvas": "^1.4.1",
 		"leaflet": "^1.9.4",
 		"maplibre-gl": "^5.18.0"
