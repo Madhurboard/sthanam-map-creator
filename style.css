@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-	--accent-color-rgb: 15, 23, 42;
+	--accent-color-rgb: 201, 168, 76;
 }
 
 .bg-accent {
@@ -80,11 +80,11 @@
 		@apply absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-all duration-300 shadow-sm;
 	}
 
-	input:checked + .toggle-pill {
+	input:checked+.toggle-pill {
 		@apply bg-accent;
 	}
 
-	input:checked + .toggle-pill::after {
+	input:checked+.toggle-pill::after {
 		@apply translate-x-5;
 	}
 
@@ -131,15 +131,16 @@
 	@apply opacity-100 pointer-events-auto;
 }
 
-#presets-modal.show > div:last-child,
-#credits-modal.show > div:last-child,
-#artistic-modal.show > div:last-child {
+#presets-modal.show>div:last-child,
+#credits-modal.show>div:last-child,
+#artistic-modal.show>div:last-child {
 	@apply scale-100;
 }
 
 .no-scrollbar::-webkit-scrollbar {
 	display: none;
 }
+
 .no-scrollbar {
 	-ms-overflow-style: none;
 	scrollbar-width: none;

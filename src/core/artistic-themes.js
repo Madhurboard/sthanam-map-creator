@@ -1,6 +1,6 @@
 export const artisticThemes = {
 	ancient_woodland: {
-		name: "Ancient Woodland",
+		name: "Aranya (Woodland)",
 		description: "Deep forest greens and mossy textures for a lush canopy feel",
 		bg: "#064E3B",
 		text: "#D1FAE5",
@@ -14,7 +14,7 @@ export const artisticThemes = {
 		road_default: "#34D399"
 	},
 	arctic_frost: {
-		name: "Arctic Frost",
+		name: "Hima (Frost)",
 		description: "Pale blues and crisp whites for a frozen landscape look",
 		bg: "#F0F9FF",
 		text: "#0C4A6E",
@@ -28,7 +28,7 @@ export const artisticThemes = {
 		road_default: "#7DD3FC"
 	},
 	arid_canyon: {
-		name: "Arid Canyon",
+		name: "Marusthal (Desert)",
 		description: "Dusty ochre and sun-scorched earth tones for desert landscapes",
 		bg: "#FFFBEB",
 		text: "#451A03",
@@ -42,7 +42,7 @@ export const artisticThemes = {
 		road_default: "#EA580C"
 	},
 	aurora_glow: {
-		name: "Aurora Glow",
+		name: "Prabha (Aurora)",
 		description: "Iridescent greens and pinks inspired by northern lights",
 		bg: "#071428",
 		text: "#E6FFF7",
@@ -56,7 +56,7 @@ export const artisticThemes = {
 		road_default: "#3BD6B6"
 	},
 	autumn_whisper: {
-		name: "Autumn Whisper",
+		name: "Hemant (Autumn)",
 		description: "Burned oranges and deep ochre tints of fallen leaves",
 		bg: "#451A03",
 		text: "#FEF3C7",
@@ -70,7 +70,7 @@ export const artisticThemes = {
 		road_default: "#FBBF24"
 	},
 	blueprint_classic: {
-		name: "Blueprint Classic",
+		name: "Naksha (Blueprint)",
 		description: "Technical cyanotype style for an architectural, engineered feel",
 		bg: "#1E3A8A",
 		text: "#DBEAFE",
@@ -84,7 +84,7 @@ export const artisticThemes = {
 		road_default: "#93C5FD"
 	},
 	charcoal_sketch: {
-		name: "Charcoal Sketch",
+		name: "Koyala (Charcoal)",
 		description: "The look of graphite on textured heavy-grain paper",
 		bg: "#E5E7EB",
 		text: "#1F2937",
@@ -98,7 +98,7 @@ export const artisticThemes = {
 		road_default: "#4B5563"
 	},
 	copper_patina: {
-		name: "Copper Patina",
+		name: "Tamra (Copper)",
 		description: "Aged bronze and oxidized turquoise for a weathered metal look",
 		bg: "#134E4A",
 		text: "#CCFBF1",
@@ -112,7 +112,7 @@ export const artisticThemes = {
 		road_default: "#2DD4BF"
 	},
 	cyber_glitch: {
-		name: "Cyber Glitch",
+		name: "Maya (Glitch)",
 		description: "Electric purples and neon yellows for a digital future",
 		bg: "#2E1065",
 		text: "#F0ABFC",
@@ -126,7 +126,7 @@ export const artisticThemes = {
 		road_default: "#A855F7"
 	},
 	cyber_noir: {
-		name: "Cyber Noir",
+		name: "Rahasya (Noir)",
 		description: "Dark background with vibrant neon stripe palette",
 		bg: "#0B0B16",
 		text: "#00E5E5",
@@ -141,7 +141,7 @@ export const artisticThemes = {
 		road_default: "#008F95"
 	},
 	desert_mirage: {
-		name: "Desert Mirage",
+		name: "Trishna (Mirage)",
 		description: "Sun-bleached sands and warm terracotta tones",
 		bg: "#FEF3C7",
 		text: "#92400E",
@@ -155,7 +155,7 @@ export const artisticThemes = {
 		road_default: "#F59E0B"
 	},
 	deep_ocean: {
-		name: "Deep Ocean",
+		name: "Sagar (Ocean)",
 		description: "Dark navy depths and teal currents",
 		bg: "#082F49",
 		text: "#E0F2FE",
@@ -169,7 +169,7 @@ export const artisticThemes = {
 		road_default: "#38BDF8"
 	},
 	dark_gold: {
-		name: "Dark Gold",
+		name: "Suvarna (Gold)",
 		description: "Luxurious dark background with warm gold accents",
 		bg: "#0B0A09",
 		text: "#F6E7C1",
@@ -183,7 +183,7 @@ export const artisticThemes = {
 		road_default: "#A3752B"
 	},
 	emerald_valley: {
-		name: "Emerald Valley",
+		name: "Panna (Emerald)",
 		description: "Lush mossy greens and deep forest tones",
 		bg: "#022C22",
 		text: "#D1FAE5",
@@ -197,7 +197,7 @@ export const artisticThemes = {
 		road_default: "#059669"
 	},
 	ethereal_ghost: {
-		name: "Ethereal Ghost",
+		name: "Aatma (Ethereal)",
 		description: "Ultra-minimalist light greys and silvery whites",
 		bg: "#FAFAFA",
 		text: "#404040",
@@ -211,7 +211,7 @@ export const artisticThemes = {
 		road_default: "#A3A3A3"
 	},
 	forest_shadow: {
-		name: "Forest Shadow",
+		name: "Vana (Shadow)",
 		description: "Moody, deep evergreen tones with misty highlights",
 		bg: "#052E16",
 		text: "#ECFDF5",
@@ -225,7 +225,7 @@ export const artisticThemes = {
 		road_default: "#059669"
 	},
 	golden_era: {
-		name: "Golden Era",
+		name: "Swarna Yug",
 		description: "Rich yellows and deep browns recalling classic cartography",
 		bg: "#FEFCE8",
 		text: "#713F12",
@@ -239,7 +239,7 @@ export const artisticThemes = {
 		road_default: "#CA8A04"
 	},
 	lavender_mist: {
-		name: "Lavender Mist",
+		name: "Kamal (Lavender)",
 		description: "Soft purples and muted greys - dreamy cartography",
 		bg: "#F5F3FF",
 		text: "#4C1D95",
@@ -253,7 +253,7 @@ export const artisticThemes = {
 		road_default: "#7C3AED"
 	},
 	mint_fizz: {
-		name: "Mint Fizz",
+		name: "Pudina (Mint)",
 		description: "Fresh minty pastels for a calm, modern map",
 		bg: "#F4FFFB",
 		text: "#09332A",
@@ -267,7 +267,7 @@ export const artisticThemes = {
 		road_default: "#4ADE80"
 	},
 	midnight_neon: {
-		name: "Midnight Neon",
+		name: "Jagmag (Neon)",
 		description: "Black ink nights with neon accents for dramatic contrast",
 		bg: "#030014",
 		text: "#EAF7FF",
@@ -281,7 +281,7 @@ export const artisticThemes = {
 		road_default: "#00E5FF"
 	},
 	monochrome_pro: {
-		name: "Monochrome Pro",
+		name: "Ekranga (Mono)",
 		description: "Balanced greyscale for professional architectural maps",
 		bg: "#FFFFFF",
 		text: "#18181B",
@@ -295,7 +295,7 @@ export const artisticThemes = {
 		road_default: "#52525B"
 	},
 	mangrove_maze: {
-		name: "Mangrove Maze",
+		name: "Sundarban",
 		description: "Murky swamp tones and brackish water for coastal wetlands",
 		bg: "#111827",
 		text: "#A7F3D0",
@@ -309,7 +309,7 @@ export const artisticThemes = {
 		road_default: "#4D7C0F"
 	},
 	paper_heritage: {
-		name: "Paper Heritage",
+		name: "Patrika (Heritage)",
 		description: "Soft sepia tones and inked roads for vintage prints",
 		bg: "#FBF6EE",
 		text: "#3B2F2F",
@@ -323,7 +323,7 @@ export const artisticThemes = {
 		road_default: "#B77A3A"
 	},
 	riverine_flow: {
-		name: "Riverine Flow",
+		name: "Nadi (Riverine)",
 		description: "Cool aquas and deep teals emphasizing the movement of water",
 		bg: "#ECFEFF",
 		text: "#083344",
@@ -337,7 +337,7 @@ export const artisticThemes = {
 		road_default: "#22D3EE"
 	},
 	retro_synth: {
-		name: "Retro Synth",
+		name: "Chitra (Retro)",
 		description: "80s outrun aesthetic with neon magentas and electric blues",
 		bg: "#1A0B2E",
 		text: "#FF00FF",
@@ -351,7 +351,7 @@ export const artisticThemes = {
 		road_default: "#BD00FF"
 	},
 	royal_velvet: {
-		name: "Royal Velvet",
+		name: "Mahal (Royal)",
 		description: "Deep regal purples paired with rich metallic gold",
 		bg: "#2E1065",
 		text: "#FEF08A",
@@ -365,7 +365,7 @@ export const artisticThemes = {
 		road_default: "#A855F7"
 	},
 	rustic_clay: {
-		name: "Rustic Clay",
+		name: "Mitti (Clay)",
 		description: "Earthy reds and warm oranges - sun-baked urban style",
 		bg: "#FFF7ED",
 		text: "#7C2D12",
@@ -379,7 +379,7 @@ export const artisticThemes = {
 		road_default: "#EA580C"
 	},
 	sakura_bloom: {
-		name: "Sakura Bloom",
+		name: "Vasant (Bloom)",
 		description: "Soft cherry blossom pinks and delicate cream tones",
 		bg: "#FFF1F2",
 		text: "#881337",
@@ -393,7 +393,7 @@ export const artisticThemes = {
 		road_default: "#F9A8D4"
 	},
 	solar_flare: {
-		name: "Solar Flare",
+		name: "Surya (Solar)",
 		description: "High-energy oranges and blacks inspired by sunspots",
 		bg: "#000000",
 		text: "#FB923C",
@@ -407,7 +407,7 @@ export const artisticThemes = {
 		road_default: "#EA580C"
 	},
 	steel_metropolis: {
-		name: "Steel Metropolis",
+		name: "Nagar (Steel)",
 		description: "Cold slate and concrete greys for a modern cityscape aesthetic",
 		bg: "#334155",
 		text: "#F1F5F9",
@@ -421,7 +421,7 @@ export const artisticThemes = {
 		road_default: "#CBD5E1"
 	},
 	sunset_blush: {
-		name: "Sunset Blush",
+		name: "Sandhya (Sunset)",
 		description: "Warm pinks and corals mimicking a coastal sunset",
 		bg: "#FFF5F7",
 		text: "#6B1226",
@@ -435,7 +435,7 @@ export const artisticThemes = {
 		road_default: "#FF6B6B"
 	},
 	volcanic_ash: {
-		name: "Volcanic Ash",
+		name: "Bhasma (Ash)",
 		description: "Deep charcoal and glowing embers - high drama style",
 		bg: "#1C1917",
 		text: "#FAFAF9",

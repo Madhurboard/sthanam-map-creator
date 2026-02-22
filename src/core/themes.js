@@ -1,6 +1,6 @@
 export const themes = {
 	standard: {
-		name: "Classic Street",
+		name: "Marg (Classic)",
 		tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 		tileUrlNoLabels: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 		background: "#ffffff",
@@ -10,7 +10,7 @@ export const themes = {
 		description: "The classic OpenStreetMap look that everyone knows."
 	},
 	dark: {
-		name: "Midnight Dark",
+		name: "Ratri (Dark)",
 		tileUrl: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 		tileUrlNoLabels: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
 		background: "#111111",
@@ -20,7 +20,7 @@ export const themes = {
 		description: "Sleek and professional dark map for a premium feel."
 	},
 	minimal: {
-		name: "Minimal White",
+		name: "Shwet (Minimal)",
 		tileUrl: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
 		tileUrlNoLabels: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
 		background: "#ffffff",
@@ -30,7 +30,7 @@ export const themes = {
 		description: "Clean, elegant, and light. Perfect for modern spaces."
 	},
 	voyager: {
-		name: "Modern Voyager",
+		name: "Yatri (Modern)",
 		tileUrl: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
 		tileUrlNoLabels: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",
 		background: "#ffffff",
@@ -40,7 +40,7 @@ export const themes = {
 		description: "Beautifully colored map with clear terrain and roads."
 	},
 	satellite: {
-		name: "Satellite View",
+		name: "Antariksh (Satellite)",
 		tileUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
 		tileUrlNoLabels: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
 		background: "#000000",
