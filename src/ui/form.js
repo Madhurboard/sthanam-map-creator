@@ -33,7 +33,7 @@ export function setupControls() {
 	const artisticThemeConfig = document.getElementById('artistic-theme-config');
 	const labelsControl = document.getElementById('labels-control');
 
-	const themeSelect = document.getElementById('theme-select');
+	const standardThemeGrid = document.getElementById('standard-theme-grid');
 	const artisticMainGrid = document.getElementById('artistic-main-grid');
 	const artisticDesc = document.getElementById('artistic-desc');
 
@@ -93,74 +93,52 @@ export function setupControls() {
 		}
 	}
 
-	if (themeSelect) {
-		const themeDropdown = document.querySelector('.theme-picker-dropdown');
-		if (themeDropdown) {
-			themeDropdown.innerHTML = Object.keys(themes)
-				.sort((a, b) => (themes[a].name || a).localeCompare(themes[b].name || b))
-				.map(key => {
-					const t = themes[key];
-					// Use a simple heuristic or defined colors for standard theme swatches
-					const p1 = t.bg || '#ffffff';
-					const p2 = t.water || '#aadaff';
-					const p3 = t.road || '#cccccc';
-					return `
-						<button type="button" class="w-full text-left p-3 hover:bg-slate-50 rounded-xl transition-colors theme-option flex items-center space-x-3" data-value="${key}">
-							<div class="flex -space-x-1">
-								<span class="w-5 h-5 rounded-full ring-1 ring-slate-200" style="background:${p1}"></span>
-								<span class="w-5 h-5 rounded-full ring-1 ring-slate-200" style="background:${p2}"></span>
-								<span class="w-5 h-5 rounded-full ring-1 ring-slate-200" style="background:${p3}"></span>
-							</div>
-							<span class="text-sm font-medium text-slate-700">${t.name || key}</span>
-						</button>`;
-				})
-				.join('\n');
-		}
+	if (standardThemeGrid) {
+		const makeCard = (key, theme) => {
+			const p1 = theme.bg || '#ffffff';
+			const p2 = theme.water || '#aadaff';
+			const p3 = theme.road || '#cccccc';
+			const label = theme && theme.name ? theme.name : key;
+			return `
+				<button type="button" data-key="${key}" class="std-card group p-3 rounded-2xl border border-slate-100 bg-slate-50 flex flex-col items-center text-center hover:shadow-xl transition-all">
+					<div class="flex items-center justify-center -space-x-1">
+						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p1}"></span>
+						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p2}"></span>
+						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p3}"></span>
+					</div>
+					<div class="mt-3 text-[11px] font-semibold text-slate-900">${label}</div>
+				</button>
+			`;
+		};
 
-		// Setup Theme Picker Toggle
-		const themeContainer = document.querySelector('.theme-picker-container');
-		if (themeContainer) {
-			const btn = themeContainer.querySelector('.theme-picker-btn');
-			const dropdown = themeContainer.querySelector('.theme-picker-dropdown');
-			const hiddenInput = document.getElementById('theme-select');
-			
-			btn.addEventListener('click', (e) => {
-				e.stopPropagation();
-				const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-				
-				// Close font dropdowns to avoid overlap
-				document.querySelectorAll('.font-picker-dropdown').forEach(d => {
-					d.classList.add('hidden');
-					d.previousElementSibling?.setAttribute('aria-expanded', 'false');
+		const keys = Object.keys(themes).sort((a, b) => 
+			(themes[a].name || a).localeCompare((themes[b].name || b))
+		);
+
+		standardThemeGrid.innerHTML = keys.map(k => makeCard(k, themes[k])).join('');
+
+		const cards = standardThemeGrid.querySelectorAll('.std-card');
+		cards.forEach(btn => {
+			btn.addEventListener('click', () => {
+				cards.forEach(c => {
+					c.classList.remove('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
+					c.classList.add('border-slate-100', 'bg-slate-50');
 				});
+				btn.classList.add('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
+				btn.classList.remove('border-slate-100', 'bg-slate-50');
 
-				dropdown.classList.toggle('hidden', isExpanded);
-				btn.setAttribute('aria-expanded', !isExpanded);
+				const k = btn.dataset.key;
+				clearTimeout(_themeChangeTimer);
+				_themeChangeTimer = setTimeout(() => applyThemeChange(k), 120);
 			});
-
-			const options = dropdown.querySelectorAll('.theme-option');
-			options.forEach(option => {
-				option.addEventListener('click', (e) => {
-					e.stopPropagation();
-					const val = option.dataset.value;
-					hiddenInput.value = val;
-					
-					// Trigger change logic
-					clearTimeout(_themeChangeTimer);
-					_themeChangeTimer = setTimeout(() => applyThemeChange(val), 120);
-					
-					dropdown.classList.add('hidden');
-					btn.setAttribute('aria-expanded', 'false');
-				});
-			});
-
-			// Close on click outside
-			document.addEventListener('click', (e) => {
-				if (!e.target.closest('.theme-picker-container')) {
-					dropdown.classList.add('hidden');
-					btn.setAttribute('aria-expanded', 'false');
-				}
-			});
+		});
+		
+		// Set initial active state
+		const initialTheme = state.theme || 'light_all';
+		const initialBtn = standardThemeGrid.querySelector(`[data-key="${initialTheme}"]`);
+		if (initialBtn) {
+			initialBtn.classList.add('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
+			initialBtn.classList.remove('border-slate-100', 'bg-slate-50');
 		}
 	}
 
@@ -232,10 +210,10 @@ export function setupControls() {
 				pinOptions.forEach(p => {
 					if (p.dataset.value === val) {
 						p.classList.add('border-accent', 'bg-accent-light', 'text-accent');
-						p.classList.remove('border-slate-200', 'bg-white', 'text-slate-400');
+						p.classList.remove('border-slate-200', 'bg-white', 'text-slate-500');
 					} else {
 						p.classList.remove('border-accent', 'bg-accent-light', 'text-accent');
-						p.classList.add('border-slate-200', 'bg-white', 'text-slate-400');
+						p.classList.add('border-slate-200', 'bg-white', 'text-slate-500');
 					}
 				});
 
@@ -255,15 +233,17 @@ export function setupControls() {
 	}
 
 	const logoBtn = document.getElementById('logo-btn');
+	const mobileLogoBtn = document.getElementById('mobile-logo-btn');
 	const creditsModal = document.getElementById('credits-modal');
 	const closeCredits = document.getElementById('close-credits');
 	const creditsOverlay = document.getElementById('credits-overlay');
 
-	if (logoBtn) {
-		logoBtn.addEventListener('click', () => {
-			if (creditsModal) creditsModal.classList.add('show');
-		});
-	}
+	const openCredits = () => {
+		if (creditsModal) creditsModal.classList.add('show');
+	};
+
+	if (logoBtn) logoBtn.addEventListener('click', openCredits);
+	if (mobileLogoBtn) mobileLogoBtn.addEventListener('click', openCredits);
 
 	const closeCreditsFunctions = [closeCredits, creditsOverlay];
 	closeCreditsFunctions.forEach(el => {
@@ -305,7 +285,7 @@ export function setupControls() {
       <div class="space-y-4">
         <div class="flex items-center space-x-3">
           <div class="w-1 h-5 bg-accent rounded-full"></div>
-          <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">${key.replace('_', ' ')}</h3>
+          <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">${key.replace('_', ' ')}</h3>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           ${presets.map(p => {
@@ -314,7 +294,7 @@ export function setupControls() {
               <button class="modal-preset-btn group flex flex-col items-start p-4 border ${isActive ? 'border-accent bg-accent-light' : 'border-slate-100 bg-slate-50/50'} rounded-2xl hover:border-accent hover:bg-white hover:shadow-xl transition-all text-left" 
                       data-width="${p.width}" data-height="${p.height}">
                 <span class="text-[11px] font-bold ${isActive ? 'text-accent' : 'text-slate-800'} group-hover:text-accent transition-colors">${p.name}</span>
-                <span class="text-[9px] ${isActive ? 'text-accent/60' : 'text-slate-400'} font-bold mt-1 uppercase tracking-tight">${p.width} × ${p.height} px</span>
+                <span class="text-[9px] ${isActive ? 'text-accent/60' : 'text-slate-500'} font-bold mt-1 uppercase tracking-tight">${p.width} × ${p.height} px</span>
               </button>
             `;
 		}).join('')}
@@ -764,7 +744,7 @@ export function setupControls() {
 					tabBtns.forEach(b => {
 						if (!b.classList.contains('desktop-tab-btn')) {
 							b.classList.remove('text-accent');
-							b.classList.add('text-slate-400');
+							b.classList.add('text-slate-500');
 						}
 					});
 				} else {
@@ -779,19 +759,19 @@ export function setupControls() {
 							// Desktop styles
 							if (isTarget) {
 								b.classList.add('text-accent', 'border-accent');
-								b.classList.remove('text-slate-400', 'border-transparent');
+								b.classList.remove('text-slate-500', 'border-transparent');
 							} else {
 								b.classList.remove('text-accent', 'border-accent');
-								b.classList.add('text-slate-400', 'border-transparent');
+								b.classList.add('text-slate-500', 'border-transparent');
 							}
 						} else {
 							// Mobile styles
 							if (isTarget) {
 								b.classList.add('text-accent');
-								b.classList.remove('text-slate-400');
+								b.classList.remove('text-slate-500');
 							} else {
 								b.classList.remove('text-accent');
-								b.classList.add('text-slate-400');
+								b.classList.add('text-slate-500');
 							}
 						}
 					});
@@ -828,7 +808,7 @@ export function setupControls() {
 				tabBtns.forEach(b => {
 					if (!b.classList.contains('desktop-tab-btn')) {
 						b.classList.remove('text-accent');
-						b.classList.add('text-slate-400');
+						b.classList.add('text-slate-500');
 					}
 				});
 			}
@@ -867,7 +847,7 @@ export function setupControls() {
 		syncFontPicker('country-font', currentState.countryFont);
 		syncFontPicker('coords-font', currentState.coordsFont);
 
-		const EYE_OPEN_SVG = `<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
+		const EYE_OPEN_SVG = `<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
 		const EYE_OFF_SVG = `<svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>`;
 
 		const toggleCountryBtnSync = document.getElementById('toggle-country-btn');
@@ -1014,10 +994,10 @@ export function setupControls() {
 			pinOpts.forEach(p => {
 				if (p.dataset.value === currentIcon) {
 					p.classList.add('border-accent', 'bg-accent-light', 'text-accent');
-					p.classList.remove('border-slate-200', 'bg-white', 'text-slate-400');
+					p.classList.remove('border-slate-200', 'bg-white', 'text-slate-500');
 				} else {
 					p.classList.remove('border-accent', 'bg-accent-light', 'text-accent');
-					p.classList.add('border-slate-200', 'bg-white', 'text-slate-400');
+					p.classList.add('border-slate-200', 'bg-white', 'text-slate-500');
 				}
 			});
 		}
@@ -1071,22 +1051,9 @@ export function setupControls() {
 			}
 		}
 
-		let accentColor = '#0f172a';
-		if (currentState.renderMode === 'artistic') {
-			const theme = getSelectedArtisticTheme();
-			accentColor = theme.road_primary || theme.text || '#0f172a';
-			exportBtn.classList.remove('bg-slate-900');
-			exportBtn.classList.add('bg-accent');
-		} else {
-			accentColor = '#0f172a';
-			exportBtn.classList.add('bg-slate-900');
-			exportBtn.classList.remove('bg-accent');
-		}
-
-		const r = parseInt(accentColor.slice(1, 3), 16);
-		const g = parseInt(accentColor.slice(3, 5), 16);
-		const b = parseInt(accentColor.slice(5, 7), 16);
-		document.documentElement.style.setProperty('--accent-color-rgb', `${r}, ${g}, ${b}`);
+		// Use the fixed global accent color for the export button
+		exportBtn.classList.remove('bg-slate-900');
+		exportBtn.classList.add('bg-accent', 'text-white');
 	};
 }
 

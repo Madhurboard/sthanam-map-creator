@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-	--accent-color-rgb: 201, 168, 76;
+	--accent-color-rgb: 59, 130, 246;
+	/* Tailwind blue-500 for excellent visibility */
 }
 
 .bg-accent {
@@ -68,7 +69,7 @@
 	}
 
 	.label-sm {
-		@apply text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 block px-1;
+		@apply text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 block px-1;
 	}
 
 	.toggle-pill {
@@ -114,6 +115,80 @@
 
 	.marker-pin {
 		@apply w-10 h-10 text-accent filter drop-shadow-lg;
+	}
+
+	.liquid-glass {
+		/* Core properties: tint, thick blur, saturation pull */
+		background: rgba(255, 255, 255, 0.4);
+		backdrop-filter: blur(24px) saturate(180%);
+		-webkit-backdrop-filter: blur(24px) saturate(180%);
+
+		/* Specular Edge Highlighting (Light Source Top-Left) */
+		box-shadow:
+			0 10px 40px -10px rgba(0, 0, 0, 0.1),
+			/* Ambient drop shadow */
+			inset 0 1px 1px 0 rgba(255, 255, 255, 0.8),
+			/* Top inner highlight */
+			inset 0 -1px 1px 0 rgba(255, 255, 255, 0.1);
+		/* Bottom inner slightly transparent */
+
+		/* Crisp translucent stroke */
+		border: 1px solid rgba(255, 255, 255, 0.5);
+	}
+
+	.liquid-glass-dark {
+		background: rgba(15, 15, 15, 0.3);
+		backdrop-filter: blur(24px) saturate(180%);
+		-webkit-backdrop-filter: blur(24px) saturate(180%);
+
+		box-shadow:
+			0 16px 50px -10px rgba(0, 0, 0, 0.4),
+			inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.liquid-glass-interactive {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.liquid-glass-interactive::before {
+		content: "";
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		background: radial-gradient(circle at center,
+				rgba(255, 255, 255, 0.15) 0%,
+				transparent 50%);
+		animation: liquid-drift 10s infinite alternate ease-in-out;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.5s ease;
+	}
+
+	.liquid-glass-interactive:hover::before {
+		opacity: 1;
+	}
+
+	@keyframes liquid-drift {
+		0% {
+			transform: translate(0, 0) scale(1);
+		}
+
+		33% {
+			transform: translate(10%, -15%) scale(1.2);
+		}
+
+		66% {
+			transform: translate(-10%, 10%) scale(0.9);
+		}
+
+		100% {
+			transform: translate(5%, 15%) scale(1.1);
+		}
 	}
 }
 
