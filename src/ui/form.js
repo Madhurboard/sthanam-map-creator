@@ -43,11 +43,9 @@ export function setupControls() {
 	};
 
 	if (artisticMainGrid) {
-		const mainKeys = ['cyber_noir', 'golden_era', 'mangrove_maze'];
-
-		const makeCard = (key, theme, isOther = false) => {
+		const makeCard = (key, theme) => {
 			const p = paletteFor(theme);
-			const label = theme && theme.name ? theme.name : (isOther ? 'Other Theme' : key);
+			const label = theme && theme.name ? theme.name : key;
 			return `
 				<button type="button" data-key="${key}" class="art-card group p-3 rounded-2xl border border-slate-100 bg-slate-50 flex flex-col items-center text-center hover:shadow-xl transition-all">
 					<div class="flex items-center justify-center -space-x-2">
@@ -61,20 +59,23 @@ export function setupControls() {
 			`;
 		};
 
-		const mainHtml = mainKeys.map(k => makeCard(k, artisticThemes[k] || {})).join('') + makeCard('other', { name: 'Other Theme' }, true);
-		artisticMainGrid.innerHTML = mainHtml;
+		const keys = Object.keys(artisticThemes).sort((a, b) => 
+			(artisticThemes[a].name || a).localeCompare((artisticThemes[b].name || b))
+		);
 
-		artisticMainGrid.querySelectorAll('.art-card').forEach(btn => {
-			btn.addEventListener('click', (e) => {
+		artisticMainGrid.innerHTML = keys.map(k => makeCard(k, artisticThemes[k])).join('');
+
+		const cards = artisticMainGrid.querySelectorAll('.art-card');
+		cards.forEach(btn => {
+			btn.addEventListener('click', () => {
+				cards.forEach(c => {
+					c.classList.remove('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
+					c.classList.add('border-slate-100', 'bg-slate-50');
+				});
+				btn.classList.add('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
+				btn.classList.remove('border-slate-100', 'bg-slate-50');
+
 				const k = btn.dataset.key;
-				if (k === 'other') {
-					const artModal = document.getElementById('artistic-modal');
-					if (artModal) {
-						artModal.classList.add('show');
-						populateArtisticModal();
-					}
-					return;
-				}
 				updateState({ artisticTheme: k });
 				if (state.renderMode === 'artistic') {
 					const theme = getSelectedArtisticTheme();
@@ -82,6 +83,14 @@ export function setupControls() {
 				}
 			});
 		});
+		
+		// Set initial active state
+		const initialTheme = state.artisticTheme || 'monochrome_pro';
+		const initialBtn = artisticMainGrid.querySelector(`[data-key="${initialTheme}"]`);
+		if (initialBtn) {
+			initialBtn.classList.add('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
+			initialBtn.classList.remove('border-slate-100', 'bg-slate-50');
+		}
 	}
 
 	if (themeSelect) {
@@ -288,53 +297,7 @@ export function setupControls() {
 		}
 	});
 
-	const artisticModal = document.getElementById('artistic-modal');
-	const artisticModalContent = document.getElementById('artistic-modal-content');
-	const closeArtisticModal = document.getElementById('close-artistic-modal');
-	const closeArtisticModalBtn = document.getElementById('close-artistic-modal-btn');
-	const artisticModalOverlay = document.getElementById('artistic-modal-overlay');
-
-	const closeArtisticFuncs = [closeArtisticModal, closeArtisticModalBtn, artisticModalOverlay];
-	closeArtisticFuncs.forEach(el => {
-		if (el) el.addEventListener('click', () => { if (artisticModal) artisticModal.classList.remove('show'); });
-	});
-
-	function populateArtisticModal() {
-		if (!artisticModalContent) return;
-		const mainKeys = new Set(['cyber_noir', 'golden_era', 'mangrove_maze']);
-		artisticModalContent.innerHTML = Object.entries(artisticThemes)
-			.filter(([k]) => !mainKeys.has(k))
-			.map(([key, t]) => {
-				const candidates = [t.road_motorway, t.road_primary, t.road_secondary, t.road_tertiary, t.text, t.bg];
-				const p = candidates.map(c => c || '#cccccc').slice(0, 4);
-				return `
-					<button class="artistic-modal-item group w-full flex items-center p-4 border border-slate-100 rounded-2xl hover:shadow-xl transition-all" data-key="${key}">
-						<div class="flex -space-x-2 mr-4">
-							<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[0]}"></span>
-							<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[1]}"></span>
-							<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[2]}"></span>
-							<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[3]}"></span>
-						</div>
-						<div class="text-left">
-							<div class="text-sm font-semibold text-slate-900">${t.name || key}</div>
-							<div class="text-[10px] text-slate-400 mt-1">${t.description || ''}</div>
-						</div>
-					</button>
-				`;
-			}).join('\n');
-
-		artisticModalContent.querySelectorAll('.artistic-modal-item').forEach(btn => {
-			btn.addEventListener('click', () => {
-				const k = btn.dataset.key;
-				updateState({ artisticTheme: k });
-				if (state.renderMode === 'artistic') {
-					const theme = getSelectedArtisticTheme();
-					updateArtisticStyle(theme);
-				}
-				if (artisticModal) artisticModal.classList.remove('show');
-			});
-		});
-	}
+	// Removed obsolete artisticModal and populateArtisticModal functions.
 
 	function populateModal() {
 		if (!modalContent) return;
@@ -776,58 +739,77 @@ export function setupControls() {
 		document.addEventListener('touchend', endDrag);
 	}
 
-	// Liquid Glass Mobile Tab Logic
+	// Unified Mobile & Desktop Tab Logic
 	const sidebar = document.getElementById('main-sidebar');
-	const tabBtns = document.querySelectorAll('.mobile-tab-btn');
+	const tabBtns = document.querySelectorAll('.mobile-tab-btn, .desktop-tab-btn');
 	const tabPanes = document.querySelectorAll('.tab-pane');
 
 	if (sidebar && tabBtns.length > 0) {
-		let activeTab = null;
+		// Initialize active tab to location on desktop, null on mobile
+		let activeTab = window.innerWidth >= 768 ? 'location' : null;
 
 		tabBtns.forEach(btn => {
-			btn.addEventListener('click', () => {
+			btn.addEventListener('click', (e) => {
 				const target = btn.dataset.tabTarget;
+				const isDesktopBtn = btn.classList.contains('desktop-tab-btn');
 				
-				if (activeTab === target) {
-					// Toggle off if clicking the active tab
+				if (activeTab === target && !isDesktopBtn) {
+					// Toggle off if clicking the active tab (Mobile only)
 					activeTab = null;
 					document.body.classList.remove('mobile-tab-active');
 					sidebar.classList.remove('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
 					sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
 					
-					// Reset button styles
+					// Reset mobile button styles
 					tabBtns.forEach(b => {
-						b.classList.remove('text-accent');
-						b.classList.add('text-slate-400');
+						if (!b.classList.contains('desktop-tab-btn')) {
+							b.classList.remove('text-accent');
+							b.classList.add('text-slate-400');
+						}
 					});
 				} else {
 					// Switch to new tab
 					activeTab = target;
-					document.body.classList.add('mobile-tab-active');
+					if (!isDesktopBtn) document.body.classList.add('mobile-tab-active');
 					
 					// Update buttons
 					tabBtns.forEach(b => {
-						if (b.dataset.tabTarget === target) {
-							b.classList.add('text-accent');
-							b.classList.remove('text-slate-400');
+						const isTarget = b.dataset.tabTarget === target;
+						if (b.classList.contains('desktop-tab-btn')) {
+							// Desktop styles
+							if (isTarget) {
+								b.classList.add('text-accent', 'border-accent');
+								b.classList.remove('text-slate-400', 'border-transparent');
+							} else {
+								b.classList.remove('text-accent', 'border-accent');
+								b.classList.add('text-slate-400', 'border-transparent');
+							}
 						} else {
-							b.classList.remove('text-accent');
-							b.classList.add('text-slate-400');
+							// Mobile styles
+							if (isTarget) {
+								b.classList.add('text-accent');
+								b.classList.remove('text-slate-400');
+							} else {
+								b.classList.remove('text-accent');
+								b.classList.add('text-slate-400');
+							}
 						}
 					});
 					
 					// Show correct panes, hide others
 					tabPanes.forEach(pane => {
 						if (pane.dataset.tabContent === target) {
-							pane.classList.remove('max-md:hidden');
+							pane.classList.remove('hidden');
 						} else {
-							pane.classList.add('max-md:hidden');
+							pane.classList.add('hidden');
 						}
 					});
 					
 					// Reveal sidebar container explicitly for mobile
-					sidebar.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
-					sidebar.classList.add('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
+					if (!isDesktopBtn) {
+						sidebar.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+						sidebar.classList.add('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
+					}
 				}
 			});
 		});
@@ -844,8 +826,10 @@ export function setupControls() {
 				sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
 				
 				tabBtns.forEach(b => {
-					b.classList.remove('text-accent');
-					b.classList.add('text-slate-400');
+					if (!b.classList.contains('desktop-tab-btn')) {
+						b.classList.remove('text-accent');
+						b.classList.add('text-slate-400');
+					}
 				});
 			}
 		});

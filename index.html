@@ -83,12 +83,21 @@
 			</button>
 		</div>
 
+		<!-- Desktop Tabs Navigation -->
+		<div class="px-8 pb-2 border-b border-slate-100 max-md:hidden">
+			<nav class="flex items-center justify-between" aria-label="Sidebar Tabs">
+				<button data-tab-target="location" class="desktop-tab-btn pb-3 px-1 border-b-2 border-accent text-accent text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-accent focus-visible:outline-none">Location</button>
+				<button data-tab-target="style" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-slate-400 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-slate-600 focus-visible:outline-none">Style</button>
+				<button data-tab-target="size" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-slate-400 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-slate-600 focus-visible:outline-none">Size</button>
+				<button data-tab-target="tweaks" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-slate-400 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-slate-600 focus-visible:outline-none">Tweaks</button>
+				<button data-tab-target="export" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-slate-400 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-slate-600 focus-visible:outline-none">Export</button>
+			</nav>
+		</div>
+
+
 		<div class="flex-1 overflow-y-auto max-md:px-4 max-md:py-4 px-8 py-4 md:space-y-8 no-scrollbar">
 
-			<div class="space-y-4 tab-pane max-md:hidden" data-tab-content="location">
-				<div class="flex items-center justify-between">
-					<h3 class="text-sm font-semibold text-slate-900">1. Location & Text</h3>
-				</div>
+			<div class="space-y-4 tab-pane" data-tab-content="location">
 
 				<div class="space-y-3">
 					<div class="relative group">
@@ -150,10 +159,7 @@
 				</div>
 			</div>
 
-			<div class="space-y-4 tab-pane max-md:hidden" data-tab-content="style">
-				<div class="flex items-center justify-between">
-					<h3 class="text-sm font-semibold text-slate-900">2. Map Style</h3>
-				</div>
+			<div class="space-y-4 tab-pane hidden" data-tab-content="style">
 
 				<div class="space-y-4">
 					<div class="bg-slate-100 p-1 rounded-xl flex">
@@ -194,7 +200,7 @@
 					<div id="artistic-theme-config" class="space-y-4 hidden">
 						<div>
 							<span class="label-sm">Artistic Theme</span>
-							<div id="artistic-main-grid" class="grid grid-cols-2 gap-3 mt-2">
+							<div id="artistic-main-grid" class="grid grid-cols-2 gap-3 mt-2 max-h-[350px] overflow-y-auto pr-1 pb-4 custom-scrollbar">
 							</div>
 						</div>
 						<p id="artistic-desc" class="text-[10px] text-slate-400 italic px-1"></p>
@@ -202,10 +208,7 @@
 				</div>
 			</div>
 
-			<div class="space-y-4 tab-pane max-md:hidden" data-tab-content="size">
-				<div class="flex items-center justify-between">
-					<h3 class="text-sm font-semibold text-slate-900">3. Poster Size</h3>
-				</div>
+			<div class="space-y-4 tab-pane hidden" data-tab-content="size">
 
 				<div class="space-y-4">
 					<div class="grid grid-cols-2 gap-2">
@@ -246,11 +249,7 @@
 				</div>
 			</div>
 
-			<div class="space-y-4 tab-pane max-md:hidden" data-tab-content="tweaks">
-				<div class="flex items-center justify-between">
-					<h3 class="text-sm font-semibold text-slate-900">4. Map Tweaks & Effects</h3>
-				</div>
-
+			<div class="space-y-4 tab-pane hidden" data-tab-content="tweaks">
 				<div class="space-y-4">
 					<div>
 						<div class="flex justify-between items-center mb-2">
@@ -371,14 +370,9 @@
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="space-y-4 tab-pane max-md:hidden" data-tab-content="style">
-				<div class="flex items-center justify-between">
-					<h3 class="text-sm font-semibold text-slate-900">5. Fonts</h3>
-				</div>
-
-				<div class="space-y-4">
+				<!-- Fonts Group -->
+				<div class="space-y-4 pt-8 mt-8 border-t border-slate-100">
 					<div class="relative font-picker-container" data-target="city-font">
 						<span class="label-sm">Main Title Font</span>
 						<input type="hidden" id="city-font-select" value="'Bebas Neue', sans-serif">
@@ -445,11 +439,7 @@
 				</div>
 			</div>
 
-			<div class="space-y-4 tab-pane max-md:hidden" data-tab-content="tweaks">
-				<div class="flex items-center justify-between">
-					<h3 class="text-sm font-semibold text-slate-900">6. Classic Borders</h3>
-				</div>
-
+			<div class="space-y-4 tab-pane hidden" data-tab-content="tweaks">
 				<div class="space-y-4">
 					<div class="flex items-center justify-between">
 						<span class="label-sm mb-0">Enable Border Frame</span>
@@ -594,30 +584,6 @@
 
 			<div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-center">
 				<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Made with ❤️ in India</p>
-			</div>
-		</div>
-	</div>
-
-	<div id="artistic-modal" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
-		<div id="artistic-modal-overlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
-		<div class="relative w-[90%] max-w-2xl max-h-[85vh] bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col scale-95 transition-transform duration-300">
-			<div class="p-8 border-b border-slate-100 flex items-center justify-between">
-				<div>
-					<h2 class="text-2xl font-bold text-slate-900">More Artistic Themes</h2>
-					<p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-1">Choose from more palettes</p>
-				</div>
-				<button id="close-artistic-modal" aria-label="Close Artistic Themes Sidebar" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-accent focus:outline-none">
-					<svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
-			</div>
-
-			<div id="artistic-modal-content" class="flex-1 overflow-y-auto p-8 space-y-4 no-scrollbar">
-			</div>
-
-			<div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
-				<button id="close-artistic-modal-btn" class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus:outline-none">Done</button>
 			</div>
 		</div>
 	</div>
