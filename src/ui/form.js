@@ -1202,22 +1202,22 @@ export function updatePreviewStyles(currentState) {
 			}
 		} else {
 			overlay.style.display = '';
-			const isMobile = window.innerWidth < 768;
-			let pad = isMobile ? 24 : 48;
-			let citySize = isMobile ? 32 : 64;
-			let countrySize = isMobile ? 12 : 20;
-			let coordsSize = isMobile ? 10 : 16;
+			const baseScale = currentState.width / 1080;
+			let pad = 48 * baseScale;
+			let citySize = 64 * baseScale;
+			let countrySize = 20 * baseScale;
+			let coordsSize = 16 * baseScale;
 
 			if (size === 'small') {
-				pad = isMobile ? 12 : 24;
-				citySize = isMobile ? 24 : 40;
-				countrySize = isMobile ? 10 : 14;
-				coordsSize = isMobile ? 8 : 12;
+				pad = 24 * baseScale;
+				citySize = 40 * baseScale;
+				countrySize = 14 * baseScale;
+				coordsSize = 12 * baseScale;
 			} else if (size === 'large') {
-				pad = isMobile ? 40 : 80;
-				citySize = isMobile ? 48 : 96;
-				countrySize = isMobile ? 16 : 24;
-				coordsSize = isMobile ? 14 : 20;
+				pad = 80 * baseScale;
+				citySize = 96 * baseScale;
+				countrySize = 24 * baseScale;
+				coordsSize = 20 * baseScale;
 			}
 			overlay.style.padding = `${pad}px`;
 			displayCity.style.fontSize = `${citySize}px`;
