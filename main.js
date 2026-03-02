@@ -12,43 +12,7 @@ const syncUI = setupControls();
 const exportBtn = document.getElementById('export-btn');
 const posterContainer = document.getElementById('poster-container');
 
-const mobileToggle = document.getElementById('mobile-toggle');
-const sidebarOverlay = document.getElementById('sidebar-overlay');
-const toggleIcon = mobileToggle?.querySelector('.toggle-icon');
 
-function updateMobileToggleColor(currentState) {
-	if (!mobileToggle) return;
-	if (currentState.renderMode === 'artistic') {
-		mobileToggle.classList.remove('bg-slate-900');
-		mobileToggle.classList.add('bg-accent');
-	} else {
-		mobileToggle.classList.add('bg-slate-900');
-		mobileToggle.classList.remove('bg-accent');
-	}
-}
-
-function toggleSidebar(force) {
-	const isOpen = document.body.classList.toggle('sidebar-open', force);
-	if (toggleIcon) {
-		toggleIcon.innerHTML = isOpen
-			? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />'
-			: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7" />';
-	}
-	if (isOpen) {
-		setTimeout(invalidateMapSize, 300);
-	}
-}
-
-mobileToggle?.addEventListener('click', () => toggleSidebar());
-sidebarOverlay?.addEventListener('click', () => toggleSidebar(false));
-
-subscribe((currentState, previousState) => {
-	if (previousState && (currentState.lat !== previousState.lat || currentState.lon !== previousState.lon)) {
-		if (window.innerWidth < 768) {
-			toggleSidebar(false);
-		}
-	}
-});
 
 let _exportCheckInProgress = false;
 const originalExportInner = exportBtn ? exportBtn.innerHTML : '';
@@ -62,7 +26,6 @@ subscribe((currentState) => {
 	}
 
 	updatePreviewStyles(currentState);
-	updateMobileToggleColor(currentState);
 
 	updateMarkerVisibility(currentState.showMarker);
 	updateMarkerPosition(currentState.markerLat, currentState.markerLon);
@@ -115,7 +78,7 @@ async function ensurePreviewReady() {
 }
 
 exportBtn.addEventListener('click', async () => {
-	const filename = `MapToPoster-${state.city.replace(/\s+/g, '-')}-${Date.now()}.png`;
+	const filename = `Sthanam-${state.city.replace(/\s+/g, '-')}-${Date.now()}.png`;
 	setExportButtonLoading(true, 'processing');
 	try {
 		await exportToPNG(posterContainer, filename, null);
@@ -130,4 +93,4 @@ window.addEventListener('resize', () => {
 	updatePreviewStyles(state);
 });
 
-setTimeout(invalidateMapSize, 500);
+setTimeout(invalidateMapSize, 800);

@@ -49,43 +49,58 @@
 
 @layer components {
 	.glass-card {
-		@apply bg-white/40 border shadow-xl;
-		backdrop-filter: blur(40px) saturate(200%);
-		-webkit-backdrop-filter: blur(40px) saturate(200%);
-		border-color: rgba(255, 255, 255, 0.3);
+		@apply bg-slate-900/60 shadow-2xl;
+		backdrop-filter: blur(50px) saturate(200%);
+		-webkit-backdrop-filter: blur(50px) saturate(200%);
+		border-radius: 24px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+
+		/* Dynamic Glass Rim Lighting */
+		background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+				rgba(255, 255, 255, 0.1),
+				transparent 40%), rgba(15, 23, 42, 0.6);
+
 		box-shadow:
-			0 10px 40px -10px rgba(0, 0, 0, 0.15),
-			inset 0 1px 1px rgba(255, 255, 255, 0.8),
-			inset 0 -1px 1px rgba(255, 255, 255, 0.2);
+			0 10px 40px -10px rgba(0, 0, 0, 0.5),
+			inset 0 1px 1px rgba(255, 255, 255, 0.15),
+			inset 0 -1px 1px rgba(255, 255, 255, 0.05);
 	}
 
 	.sidebar-link {
-		@apply flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-slate-600;
+		@apply flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-white/80;
 	}
 
 	.sidebar-link:hover {
-		@apply bg-accent-light text-accent;
+		@apply bg-white/10 text-white;
 	}
 
 	.input-field {
-		@apply w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all;
+		@apply w-full bg-black/15 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition-all;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+	}
+
+	.input-field::placeholder {
+		@apply text-white/40;
 	}
 
 	.input-field:focus {
-		@apply ring-accent ring-opacity-20 border-accent;
+		@apply border-white/30 bg-black/25;
+		box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
 	}
 
 	.label-sm {
-		@apply text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 block px-1;
+		@apply text-[10px] font-bold uppercase tracking-wider text-white/60 mb-1.5 block px-1;
 	}
 
 	.toggle-pill {
-		@apply w-10 h-5 bg-slate-200 rounded-full transition-all duration-300 relative cursor-pointer ring-4 ring-transparent;
+		@apply w-10 h-5 bg-black/30 rounded-full transition-all duration-300 relative cursor-pointer;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+		border: 1px solid rgba(255, 255, 255, 0.05);
 	}
 
 	.toggle-pill::after {
 		content: '';
-		@apply absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-all duration-300 shadow-sm;
+		@apply absolute top-[2px] left-[2px] w-4 h-4 bg-white/90 rounded-full transition-all duration-300 shadow-sm;
 	}
 
 	input:checked+.toggle-pill {
@@ -105,7 +120,7 @@
 	}
 
 	::-webkit-scrollbar {
-		width: 5px;
+		width: 6px;
 	}
 
 	::-webkit-scrollbar-track {
@@ -113,7 +128,13 @@
 	}
 
 	::-webkit-scrollbar-thumb {
-		@apply bg-slate-200 rounded-full hover:bg-slate-300;
+		@apply bg-white/20 rounded-full;
+		border: 2px solid transparent;
+		background-clip: padding-box;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-white/30;
 	}
 
 	.custom-marker {
@@ -125,35 +146,41 @@
 	}
 
 	.liquid-glass {
-		/* True Liquid Glass Core (Vision OS / iOS 18 style) */
-		background: rgba(255, 255, 255, 0.25);
-		backdrop-filter: blur(50px) saturate(200%);
-		-webkit-backdrop-filter: blur(50px) saturate(200%);
+		/* True Liquid Glass Core (VisionOS Style) */
+		border-radius: 32px;
+		backdrop-filter: blur(60px) saturate(200%);
+		-webkit-backdrop-filter: blur(60px) saturate(200%);
+
+		/* JS Dynamic Specular Core */
+		background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+				rgba(255, 255, 255, 0.15),
+				transparent 40%), rgba(255, 255, 255, 0.05);
+
+		border: 1px solid rgba(255, 255, 255, 0.15);
 
 		/* 3D Specular Highlighting (Volume) */
 		box-shadow:
-			0 16px 40px -8px rgba(0, 0, 0, 0.1),
-			/* Deep ambient drop shadow */
-			inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
-			/* Sharp top rim light */
-			inset 0 -1px 2px 0 rgba(255, 255, 255, 0.3);
-		/* Soft bottom reflection bounce */
-
-		/* Crisp, clean edge to separate from background */
-		border: 1px solid rgba(255, 255, 255, 0.25);
+			0 16px 40px -8px rgba(0, 0, 0, 0.4),
+			inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+			inset 0 -1px 1px 0 rgba(255, 255, 255, 0.05);
 	}
 
 	.liquid-glass-dark {
-		background: rgba(20, 20, 20, 0.35);
-		backdrop-filter: blur(50px) saturate(200%);
-		-webkit-backdrop-filter: blur(50px) saturate(200%);
+		border-radius: 32px;
+		backdrop-filter: blur(60px) saturate(200%);
+		-webkit-backdrop-filter: blur(60px) saturate(200%);
+
+		/* JS Dynamic Dark Specular Core */
+		background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+				rgba(255, 255, 255, 0.1),
+				transparent 40%), rgba(15, 23, 42, 0.4);
+
+		border: 1px solid rgba(255, 255, 255, 0.1);
 
 		box-shadow:
-			0 24px 50px -12px rgba(0, 0, 0, 0.5),
-			inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
-			inset 0 -1px 1px 0 rgba(255, 255, 255, 0.05);
-
-		border: 1px solid rgba(255, 255, 255, 0.12);
+			0 24px 50px -12px rgba(0, 0, 0, 0.6),
+			inset 0 1px 1px 0 rgba(255, 255, 255, 0.15),
+			inset 0 -1px 1px 0 rgba(255, 255, 255, 0.02);
 	}
 
 	.liquid-glass-interactive {
@@ -261,4 +288,36 @@
 	top: -100%;
 	@apply rounded-full bg-accent opacity-50;
 	animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* Elegant, Monochromatic Animated Gradient Background */
+.animated-gradient-bg {
+	background: linear-gradient(-45deg,
+			#020617,
+			/* Deepest Slate */
+			#0f172a,
+			/* Dark Slate */
+			#1e293b,
+			/* Mid Slate */
+			#172554,
+			/* Deep Blue Accent Tone */
+			#020617
+			/* Back to Deepest Slate */
+		);
+	background-size: 400% 400%;
+	animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	50% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0% 50%;
+	}
 }

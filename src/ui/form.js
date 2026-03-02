@@ -2,7 +2,6 @@ import { state, updateState, defaultState, getSelectedTheme, getSelectedArtistic
 import { hexToRgba } from '../core/utils.js';
 import { artisticThemes } from '../core/artistic-themes.js';
 import { themes } from '../core/themes.js';
-import { outputPresets } from '../core/output-presets.js';
 import {
 	updateMapPosition,
 	invalidateMapSize,
@@ -11,6 +10,10 @@ import {
 	updateMarkerStyles
 } from '../map/map-init.js';
 import { searchLocation, formatCoords } from '../map/geocoder.js';
+import { setupTabs } from './tabs.js';
+import { setupFontPickers, syncFontPicker } from './fontPicker.js';
+import { setupModals } from './modals.js';
+import { setupDraggableOverlay } from './draggable.js';
 
 
 export function setupControls() {
@@ -232,85 +235,8 @@ export function setupControls() {
 		});
 	}
 
-	const logoBtn = document.getElementById('logo-btn');
-	const mobileLogoBtn = document.getElementById('mobile-logo-btn');
-	const creditsModal = document.getElementById('credits-modal');
-	const closeCredits = document.getElementById('close-credits');
-	const creditsOverlay = document.getElementById('credits-overlay');
-
-	const openCredits = () => {
-		if (creditsModal) creditsModal.classList.add('show');
-	};
-
-	if (logoBtn) logoBtn.addEventListener('click', openCredits);
-	if (mobileLogoBtn) mobileLogoBtn.addEventListener('click', openCredits);
-
-	const closeCreditsFunctions = [closeCredits, creditsOverlay];
-	closeCreditsFunctions.forEach(el => {
-		if (el) {
-			el.addEventListener('click', () => {
-				if (creditsModal) creditsModal.classList.remove('show');
-			});
-		}
-	});
-
-	const otherPresetsBtn = document.getElementById('other-presets-btn');
-	const presetsModal = document.getElementById('presets-modal');
-	const closeModal = document.getElementById('close-modal');
-	const closeModalBtn = document.getElementById('close-modal-btn');
-	const modalContent = document.getElementById('modal-content');
-	const modalOverlay = document.getElementById('modal-overlay');
-
-	if (otherPresetsBtn) {
-		otherPresetsBtn.addEventListener('click', () => {
-			presetsModal.classList.add('show');
-			populateModal();
-		});
-	}
-
-	const closeFunctions = [closeModal, closeModalBtn, modalOverlay];
-	closeFunctions.forEach(el => {
-		if (el) {
-			el.addEventListener('click', () => {
-				if (presetsModal) presetsModal.classList.remove('show');
-			});
-		}
-	});
-
-	// Removed obsolete artisticModal and populateArtisticModal functions.
-
-	function populateModal() {
-		if (!modalContent) return;
-		modalContent.innerHTML = Object.entries(outputPresets).map(([key, presets]) => `
-      <div class="space-y-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-1 h-5 bg-accent rounded-full"></div>
-          <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">${key.replace('_', ' ')}</h3>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          ${presets.map(p => {
-			const isActive = state.width === p.width && state.height === p.height;
-			return `
-              <button class="modal-preset-btn group flex flex-col items-start p-4 border ${isActive ? 'border-accent bg-accent-light' : 'border-slate-100 bg-slate-50/50'} rounded-2xl hover:border-accent hover:bg-white hover:shadow-xl transition-all text-left" 
-                      data-width="${p.width}" data-height="${p.height}">
-                <span class="text-[11px] font-bold ${isActive ? 'text-accent' : 'text-slate-800'} group-hover:text-accent transition-colors">${p.name}</span>
-                <span class="text-[9px] ${isActive ? 'text-accent/60' : 'text-slate-500'} font-bold mt-1 uppercase tracking-tight">${p.width} × ${p.height} px</span>
-              </button>
-            `;
-		}).join('')}
-        </div>
-      </div>
-    `).join('');
-
-		modalContent.querySelectorAll('.modal-preset-btn').forEach(btn => {
-			btn.addEventListener('click', () => {
-				const width = parseInt(btn.dataset.width);
-				const height = parseInt(btn.dataset.height);
-				updateState({ width, height });
-				presetsModal.classList.remove('show');
-			});
-		});
-	}
+	// Wire up modals (credits + presets)
+	setupModals();
 
 	let searchTimeout;
 	let currentSearchController = null;
@@ -351,8 +277,8 @@ export function setupControls() {
 
 			if (results && results.length > 0) {
 				searchResults.innerHTML = results.map(r => `
-		  <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm" data-lat="${r.lat}" data-lon="${r.lon}" data-name="${r.shortName}" data-country="${r.country || ''}">
-			${r.name}
+		  <div class="px-4 py-2.5 cursor-pointer text-sm text-white/90 hover:bg-white/10 hover:text-white transition-colors duration-150 border-b border-white/5 last:border-0" data-lat="${r.lat}" data-lon="${r.lon}" data-name="${r.shortName}" data-country="${r.country || ''}">
+			<span class="block font-medium">${r.name}</span>
 		  </div>
 		`).join('');
 				searchResults.classList.remove('hidden');
@@ -361,7 +287,7 @@ export function setupControls() {
 			}
 
 			if (currentSearchController === controller) currentSearchController = null;
-		}, 1000);
+		}, 400);
 	});
 
 	let lastSelectionAt = 0;
@@ -385,6 +311,16 @@ export function setupControls() {
 		searchInput.value = name;
 		searchResults.classList.add('hidden');
 		lastSelectionAt = Date.now();
+
+		// Mobile UX: auto-close sidebar so user can see the map
+		if (window.innerWidth < 768) {
+			const sidebar = document.getElementById('main-sidebar');
+			if (sidebar) {
+				sidebar.classList.remove('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
+				sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+				document.body.classList.remove('mobile-tab-active');
+			}
+		}
 	}
 
 	searchResults.addEventListener('pointerdown', (e) => {
@@ -400,6 +336,53 @@ export function setupControls() {
 		const item = e.target.closest('[data-lat]');
 		if (item) selectResultElement(item);
 	});
+
+	// Keyboard navigation for search results: ArrowUp/Down/Enter/Escape
+	let searchHighlightIdx = -1;
+
+	function getSearchItems() {
+		return Array.from(searchResults.querySelectorAll('[data-lat]'));
+	}
+
+	function applySearchHighlight(items, idx) {
+		items.forEach((el, i) => {
+			if (i === idx) {
+				el.classList.add('bg-white/15', 'ring-1', 'ring-white/30');
+			} else {
+				el.classList.remove('bg-white/15', 'ring-1', 'ring-white/30');
+			}
+		});
+	}
+
+	searchInput.addEventListener('keydown', (e) => {
+		if (searchResults.classList.contains('hidden')) return;
+		const items = getSearchItems();
+		if (!items.length) return;
+
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			searchHighlightIdx = Math.min(searchHighlightIdx + 1, items.length - 1);
+			applySearchHighlight(items, searchHighlightIdx);
+			items[searchHighlightIdx]?.scrollIntoView({ block: 'nearest' });
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			searchHighlightIdx = Math.max(searchHighlightIdx - 1, 0);
+			applySearchHighlight(items, searchHighlightIdx);
+			items[searchHighlightIdx]?.scrollIntoView({ block: 'nearest' });
+		} else if (e.key === 'Enter') {
+			e.preventDefault();
+			const target = searchHighlightIdx >= 0 ? items[searchHighlightIdx] : items[0];
+			if (target) selectResultElement(target);
+			searchHighlightIdx = -1;
+		} else if (e.key === 'Escape') {
+			searchResults.classList.add('hidden');
+			searchHighlightIdx = -1;
+		}
+	});
+
+	// Reset highlight index whenever new results are rendered
+	const _origInput = searchInput.oninput;
+	searchResults.addEventListener('animationend', () => { searchHighlightIdx = -1; }, { capture: true });
 
 	latInput.addEventListener('change', (e) => {
 		const lat = parseFloat(e.target.value);
@@ -461,68 +444,8 @@ export function setupControls() {
 		});
 	}
 
-	// Setup custom font pickers
-	const fontPickers = document.querySelectorAll('.font-picker-container');
-	
-	fontPickers.forEach(picker => {
-		const btn = picker.querySelector('.font-picker-btn');
-		const dropdown = picker.querySelector('.font-picker-dropdown');
-		const hiddenInput = picker.querySelector('input[type="hidden"]');
-		const targetLabel = btn.querySelector('span');
-		const targetType = picker.dataset.target; // city-font, country-font, coords-font
-
-		if (!btn || !dropdown) return;
-
-		// Toggle dropdown
-		btn.addEventListener('click', (e) => {
-			e.stopPropagation();
-			const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-			
-			// Close all other dropdowns
-			document.querySelectorAll('.font-picker-dropdown').forEach(d => {
-				if (d !== dropdown) {
-					d.classList.add('hidden');
-					d.previousElementSibling?.setAttribute('aria-expanded', 'false');
-				}
-			});
-
-			dropdown.classList.toggle('hidden', isExpanded);
-			btn.setAttribute('aria-expanded', !isExpanded);
-		});
-
-		// Handle option selection
-		const options = dropdown.querySelectorAll('.font-option');
-		options.forEach(option => {
-			option.addEventListener('click', (e) => {
-				e.stopPropagation();
-				const val = option.dataset.value;
-				const text = option.textContent;
-				const fontFamily = option.style.fontFamily;
-				
-				hiddenInput.value = val;
-				targetLabel.textContent = text;
-				btn.style.fontFamily = fontFamily;
-				
-				// Update state based on target
-				if (targetType === 'city-font') updateState({ cityFont: val });
-				else if (targetType === 'country-font') updateState({ countryFont: val });
-				else if (targetType === 'coords-font') updateState({ coordsFont: val });
-
-				dropdown.classList.add('hidden');
-				btn.setAttribute('aria-expanded', 'false');
-			});
-		});
-	});
-
-	// Close font dropdowns when clicking outside
-	document.addEventListener('click', (e) => {
-		if (!e.target.closest('.font-picker-container')) {
-			document.querySelectorAll('.font-picker-dropdown').forEach(d => {
-				d.classList.add('hidden');
-				d.previousElementSibling?.setAttribute('aria-expanded', 'false');
-			});
-		}
-	});
+	// Wire up custom font pickers
+	setupFontPickers();
 
 
 	function sanitizeCoordInput(v) {
@@ -623,11 +546,28 @@ export function setupControls() {
 	});
 
 	const resetSettingsBtn = document.getElementById('reset-settings-btn');
-	if (resetSettingsBtn) {
+	const resetConfirmUI = document.getElementById('reset-confirm-ui');
+	const resetConfirmYes = document.getElementById('reset-confirm-yes');
+	const resetConfirmNo = document.getElementById('reset-confirm-no');
+
+	if (resetSettingsBtn && resetConfirmUI) {
 		resetSettingsBtn.addEventListener('click', () => {
-			if (confirm('Are you sure you want to reset all settings?')) {
-				updateState(defaultState);
-			}
+			resetConfirmUI.classList.remove('hidden');
+			resetSettingsBtn.classList.add('hidden');
+		});
+		resetConfirmYes?.addEventListener('click', () => {
+			updateState(defaultState);
+			resetConfirmUI.classList.add('hidden');
+			resetSettingsBtn.classList.remove('hidden');
+		});
+		resetConfirmNo?.addEventListener('click', () => {
+			resetConfirmUI.classList.add('hidden');
+			resetSettingsBtn.classList.remove('hidden');
+		});
+	} else if (resetSettingsBtn) {
+		// Fallback if inline UI not in HTML yet
+		resetSettingsBtn.addEventListener('click', () => {
+			if (confirm('Reset all settings to defaults?')) updateState(defaultState);
 		});
 	}
 
@@ -648,172 +588,11 @@ export function setupControls() {
 		});
 	}
 
-	const draggableOverlay = document.getElementById('poster-overlay');
-	const posterContainerForDrag = document.getElementById('poster-container');
+	// Wire up draggable poster overlay
+	setupDraggableOverlay();
 
-	if (draggableOverlay && posterContainerForDrag) {
-		let isDragging = false;
-		let dragStartClientX = 0;
-		let dragStartClientY = 0;
-		let dragStartOverlayX = 0.5;
-		let dragStartOverlayY = 0.85;
-
-		const startDrag = (clientX, clientY) => {
-			if (state.overlaySize === 'none') return;
-			isDragging = true;
-			dragStartClientX = clientX;
-			dragStartClientY = clientY;
-			dragStartOverlayX = state.overlayX !== undefined ? state.overlayX : 0.5;
-			dragStartOverlayY = state.overlayY !== undefined ? state.overlayY : 0.85;
-			draggableOverlay.style.cursor = 'grabbing';
-			document.body.style.userSelect = 'none';
-		};
-
-		const doDrag = (clientX, clientY) => {
-			if (!isDragging) return;
-			const rect = posterContainerForDrag.getBoundingClientRect();
-			const dx = (clientX - dragStartClientX) / rect.width;
-			const dy = (clientY - dragStartClientY) / rect.height;
-
-			const EDGE = 8;
-			const cW = posterContainerForDrag.offsetWidth;
-			const cH = posterContainerForDrag.offsetHeight;
-			const oW = draggableOverlay.offsetWidth;
-			const oH = draggableOverlay.offsetHeight;
-			const minX = cW > 0 && oW > 0 ? (oW / 2 + EDGE) / cW : 0.05;
-			const maxX = cW > 0 && oW > 0 ? 1 - (oW / 2 + EDGE) / cW : 0.95;
-			const minY = cH > 0 && oH > 0 ? (oH / 2 + EDGE) / cH : 0.05;
-			const maxY = cH > 0 && oH > 0 ? 1 - (oH / 2 + EDGE) / cH : 0.95;
-
-			const newX = Math.max(minX, Math.min(maxX, dragStartOverlayX + dx));
-			const newY = Math.max(minY, Math.min(maxY, dragStartOverlayY + dy));
-			updateState({ overlayX: newX, overlayY: newY });
-		};
-
-		const endDrag = () => {
-			if (!isDragging) return;
-			isDragging = false;
-			draggableOverlay.style.cursor = '';
-			document.body.style.userSelect = '';
-		};
-
-		draggableOverlay.addEventListener('mousedown', (e) => {
-			startDrag(e.clientX, e.clientY);
-			e.preventDefault();
-		});
-		document.addEventListener('mousemove', (e) => doDrag(e.clientX, e.clientY));
-		document.addEventListener('mouseup', endDrag);
-
-		draggableOverlay.addEventListener('touchstart', (e) => {
-			if (e.touches.length === 1) {
-				startDrag(e.touches[0].clientX, e.touches[0].clientY);
-				e.preventDefault();
-			}
-		}, { passive: false });
-		document.addEventListener('touchmove', (e) => {
-			if (isDragging && e.touches.length === 1) {
-				doDrag(e.touches[0].clientX, e.touches[0].clientY);
-				e.preventDefault();
-			}
-		}, { passive: false });
-		document.addEventListener('touchend', endDrag);
-	}
-
-	// Unified Mobile & Desktop Tab Logic
-	const sidebar = document.getElementById('main-sidebar');
-	const tabBtns = document.querySelectorAll('.mobile-tab-btn, .desktop-tab-btn');
-	const tabPanes = document.querySelectorAll('.tab-pane');
-
-	if (sidebar && tabBtns.length > 0) {
-		// Initialize active tab to location on desktop, null on mobile
-		let activeTab = window.innerWidth >= 768 ? 'location' : null;
-
-		tabBtns.forEach(btn => {
-			btn.addEventListener('click', (e) => {
-				const target = btn.dataset.tabTarget;
-				const isDesktopBtn = btn.classList.contains('desktop-tab-btn');
-				
-				if (activeTab === target && !isDesktopBtn) {
-					// Toggle off if clicking the active tab (Mobile only)
-					activeTab = null;
-					document.body.classList.remove('mobile-tab-active');
-					sidebar.classList.remove('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
-					sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-					
-					// Reset mobile button styles
-					tabBtns.forEach(b => {
-						if (!b.classList.contains('desktop-tab-btn')) {
-							b.classList.remove('text-accent');
-							b.classList.add('text-slate-500');
-						}
-					});
-				} else {
-					// Switch to new tab
-					activeTab = target;
-					if (!isDesktopBtn) document.body.classList.add('mobile-tab-active');
-					
-					// Update buttons
-					tabBtns.forEach(b => {
-						const isTarget = b.dataset.tabTarget === target;
-						if (b.classList.contains('desktop-tab-btn')) {
-							// Desktop styles
-							if (isTarget) {
-								b.classList.add('text-accent', 'border-accent');
-								b.classList.remove('text-slate-500', 'border-transparent');
-							} else {
-								b.classList.remove('text-accent', 'border-accent');
-								b.classList.add('text-slate-500', 'border-transparent');
-							}
-						} else {
-							// Mobile styles
-							if (isTarget) {
-								b.classList.add('text-accent');
-								b.classList.remove('text-slate-500');
-							} else {
-								b.classList.remove('text-accent');
-								b.classList.add('text-slate-500');
-							}
-						}
-					});
-					
-					// Show correct panes, hide others
-					tabPanes.forEach(pane => {
-						if (pane.dataset.tabContent === target) {
-							pane.classList.remove('hidden');
-						} else {
-							pane.classList.add('hidden');
-						}
-					});
-					
-					// Reveal sidebar container explicitly for mobile
-					if (!isDesktopBtn) {
-						sidebar.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
-						sidebar.classList.add('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
-					}
-				}
-			});
-		});
-
-		// Click outside to dismiss on mobile
-		document.addEventListener('click', (e) => {
-			if (window.innerWidth >= 768 || !activeTab) return;
-			
-			// If click is not inside the sidebar and not on a tab button
-			if (!sidebar.contains(e.target) && !e.target.closest('.mobile-tab-btn')) {
-				activeTab = null;
-				document.body.classList.remove('mobile-tab-active');
-				sidebar.classList.remove('max-md:opacity-100', 'max-md:translate-y-0', 'max-md:pointer-events-auto');
-				sidebar.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-				
-				tabBtns.forEach(b => {
-					if (!b.classList.contains('desktop-tab-btn')) {
-						b.classList.remove('text-accent');
-						b.classList.add('text-slate-500');
-					}
-				});
-			}
-		});
-	}
+	// Wire up tab system
+	setupTabs();
 
 	return (currentState) => {
 		if (cityOverrideInput) cityOverrideInput.value = currentState.cityOverride || '';
@@ -1163,6 +942,25 @@ export function updatePreviewStyles(currentState) {
 	displayCity.style.color = activeTheme.text || activeTheme.textColor;
 	displayCity.style.fontFamily = currentState.cityFont;
 
+	// Dynamic font scaling: shrink title for long city names to prevent overflow
+	const cityText = displayCity.textContent || '';
+	if (cityText.length <= 8) {
+		displayCity.style.fontSize = '';	// use CSS default (text-6xl md:text-8xl)
+	} else if (cityText.length <= 12) {
+		displayCity.style.fontSize = 'clamp(2rem, 6vw, 4.5rem)';
+	} else if (cityText.length <= 18) {
+		displayCity.style.fontSize = 'clamp(1.5rem, 4vw, 3rem)';
+	} else {
+		displayCity.style.fontSize = 'clamp(1.1rem, 3vw, 2.25rem)';
+	}
+
+	// Divider: use theme text color (white on dark, dark on light) instead of hardcoded black
+	if (divider) {
+		const themeTextColor = activeTheme.text || activeTheme.textColor || '#ffffff';
+		divider.style.backgroundColor = themeTextColor;
+		divider.style.opacity = '0.35';
+	}
+
 	if (displayCountry) {
 		displayCountry.textContent = (currentState.countryOverride && currentState.countryOverride.length) ? currentState.countryOverride : currentState.country;
 		displayCountry.style.color = activeTheme.text || activeTheme.textColor;
@@ -1223,6 +1021,18 @@ export function updatePreviewStyles(currentState) {
 			displayCity.style.fontSize = `${citySize}px`;
 			if (displayCountry) displayCountry.style.fontSize = `${countrySize}px`;
 			displayCoords.style.fontSize = `${coordsSize}px`;
+
+			// Scale spacing proportionally so text elements don't overlap at different poster sizes
+			const gapSize = Math.round(8 * baseScale);
+			const cityMargin = Math.round(16 * baseScale);
+			const dividerMargin = Math.round(12 * baseScale);
+			displayCity.style.marginBottom = `${cityMargin}px`;
+			if (divider) {
+				divider.style.marginBottom = `${dividerMargin}px`;
+			}
+			// Set the gap on the country+coords wrapper
+			const subWrapper = overlay.querySelector('.flex.flex-col.items-center');
+			if (subWrapper) subWrapper.style.rowGap = `${gapSize}px`;
 
 			const overlayX = currentState.overlayX !== undefined ? currentState.overlayX : 0.5;
 			const overlayY = currentState.overlayY !== undefined ? currentState.overlayY : 0.85;
