@@ -128,11 +128,11 @@
 		<!-- Desktop Tabs Navigation -->
 		<div class="px-8 pb-2 border-b border-white/10 max-md:hidden">
 			<nav class="flex items-center justify-between" aria-label="Sidebar Tabs">
-				<button data-tab-target="location" class="desktop-tab-btn pb-3 px-1 border-b-2 border-white/40 text-accent text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-accent focus-visible:outline-none">Location</button>
-				<button data-tab-target="style" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/60 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white/70 focus-visible:outline-none">Style</button>
-				<button data-tab-target="size" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/60 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white/70 focus-visible:outline-none">Size</button>
-				<button data-tab-target="tweaks" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/60 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white/70 focus-visible:outline-none">Tweaks</button>
-				<button data-tab-target="export" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/60 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white/70 focus-visible:outline-none">Export</button>
+				<button data-tab-target="location" class="desktop-tab-btn pb-3 px-1 border-b-2 border-accent text-accent text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-accent focus-visible:outline-none">Location</button>
+				<button data-tab-target="style" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/75 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white hover:bg-white/5 rounded-md focus-visible:outline-none">Style</button>
+				<button data-tab-target="size" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/75 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white hover:bg-white/5 rounded-md focus-visible:outline-none">Size</button>
+				<button data-tab-target="tweaks" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/75 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white hover:bg-white/5 rounded-md focus-visible:outline-none">Tweaks</button>
+				<button data-tab-target="export" class="desktop-tab-btn pb-3 px-1 border-b-2 border-transparent text-white/75 text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-white hover:bg-white/5 rounded-md focus-visible:outline-none">Export</button>
 			</nav>
 		</div>
 
@@ -156,7 +156,7 @@
 								</svg>
 							</div>
 						</div>
-						<div id="search-results" class="absolute left-0 right-0 mt-2 liquid-glass rounded-2xl shadow-xl z-[100] hidden max-h-64 overflow-y-auto p-2"></div>
+							<div id="search-results" class="absolute left-0 right-0 mt-2 bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl z-[100] hidden max-h-64 overflow-y-auto p-2"></div>
 					</div>
 
 					<div class="mt-2 text-left">
@@ -240,21 +240,21 @@
 
 				<div class="space-y-4">
 					<div class="grid grid-cols-2 gap-2">
-						<button class="preset-btn px-4 py-3 text-[11px] font-semibold border border-white/10 bg-black/30 rounded-xl hover:bg-white hover:border-white/40 hover:shadow-sm transition-all duration-200 flex flex-col items-center justify-center space-y-1" data-width="1080" data-height="1080">
+						<button class="preset-btn px-4 py-3 text-[11px] font-semibold border border-white/15 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex flex-col items-center justify-center space-y-1" data-width="1080" data-height="1080">
 							<span>Square</span>
-							<span class="text-[9px] font-normal">1080 × 1080</span>
+							<span class="text-[9px] font-normal text-white/60">1080 × 1080</span>
 						</button>
-						<button class="preset-btn px-4 py-3 text-[11px] font-semibold border border-white/10 bg-black/30 rounded-xl hover:bg-white hover:border-white/40 hover:shadow-sm transition-all duration-200 flex flex-col items-center justify-center space-y-1" data-width="1080" data-height="1920">
+						<button class="preset-btn px-4 py-3 text-[11px] font-semibold border border-white/15 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex flex-col items-center justify-center space-y-1" data-width="1080" data-height="1920">
 							<span>Portrait</span>
-							<span class="text-[9px] font-normal">1080 × 1920</span>
+							<span class="text-[9px] font-normal text-white/60">1080 × 1920</span>
 						</button>
-						<button class="preset-btn px-4 py-3 text-[11px] font-semibold border border-white/10 bg-black/30 rounded-xl hover:bg-white hover:border-white/40 hover:shadow-sm transition-all duration-200 flex flex-col items-center justify-center space-y-1" data-width="1920" data-height="1080">
+						<button class="preset-btn px-4 py-3 text-[11px] font-semibold border border-white/15 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex flex-col items-center justify-center space-y-1" data-width="1920" data-height="1080">
 							<span>Landscape</span>
-							<span class="text-[9px] font-normal">1920 × 1080</span>
+							<span class="text-[9px] font-normal text-white/60">1920 × 1080</span>
 						</button>
-						<button id="other-presets-btn" class="px-4 py-3 text-[11px] font-semibold border border-white/10 bg-black/30 rounded-xl hover:bg-white hover:border-white/40 hover:shadow-sm transition-all duration-200 flex flex-col items-center justify-center space-y-1">
+						<button id="other-presets-btn" class="px-4 py-3 text-[11px] font-semibold border border-white/15 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex flex-col items-center justify-center space-y-1">
 							<span>Other</span>
-							<span class="text-[9px] font-normal">More Sizes</span>
+							<span class="text-[9px] font-normal text-white/60">More Sizes</span>
 						</button>
 					</div>
 
@@ -328,28 +328,28 @@
 									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.15" data-overlay-y="0.15" title="Top Left">
 										<span class="pos-dot absolute top-1.5 left-1.5 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.5" data-overlay-y="0.15" title="Top Center">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.5" data-overlay-y="0.15" title="Top Center">
 										<span class="pos-dot absolute top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.85" data-overlay-y="0.15" title="Top Right">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.85" data-overlay-y="0.15" title="Top Right">
 										<span class="pos-dot absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.15" data-overlay-y="0.5" title="Middle Left">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.15" data-overlay-y="0.5" title="Middle Left">
 										<span class="pos-dot absolute top-1/2 left-1.5 -translate-y-1/2 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.5" data-overlay-y="0.5" title="Center">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.5" data-overlay-y="0.5" title="Center">
 										<span class="pos-dot absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.85" data-overlay-y="0.5" title="Middle Right">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.85" data-overlay-y="0.5" title="Middle Right">
 										<span class="pos-dot absolute top-1/2 right-1.5 -translate-y-1/2 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.15" data-overlay-y="0.85" title="Bottom Left">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.15" data-overlay-y="0.85" title="Bottom Left">
 										<span class="pos-dot absolute bottom-1.5 left-1.5 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.5" data-overlay-y="0.85" title="Bottom Center">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.5" data-overlay-y="0.85" title="Bottom Center">
 										<span class="pos-dot absolute bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
-									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/10 bg-black/30 hover:border-white/40 hover:bg-white transition-all" data-overlay-x="0.85" data-overlay-y="0.85" title="Bottom Right">
+									<button class="overlay-pos-btn relative aspect-square rounded-lg border border-white/15 bg-white/10 backdrop-blur-sm hover:border-white/30 hover:bg-white/20 transition-all" data-overlay-x="0.85" data-overlay-y="0.85" title="Bottom Right">
 										<span class="pos-dot absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-slate-300 transition-colors"></span>
 									</button>
 								</div>
@@ -377,13 +377,13 @@
 											</svg>
 											<span class="text-[10px] font-bold">Classic</span>
 										</button>
-										<button type="button" class="pin-option flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-white text-white/60 hover:border-white/40 hover:text-accent hover:shadow-sm transition-all text-center" data-value="dot">
+										<button type="button" class="pin-option flex flex-col items-center justify-center p-3 rounded-xl border border-white/15 bg-white/10 text-white/70 hover:border-white/30 hover:text-accent transition-all text-center" data-value="dot">
 											<svg class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="currentColor">
 												<circle cx="12" cy="12" r="8"/>
 											</svg>
 											<span class="text-[10px] font-bold">Minimal</span>
 										</button>
-										<button type="button" class="pin-option flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-white text-white/60 hover:border-white/40 hover:text-accent hover:shadow-sm transition-all text-center" data-value="custom">
+										<button type="button" class="pin-option flex flex-col items-center justify-center p-3 rounded-xl border border-white/15 bg-white/10 text-white/70 hover:border-white/30 hover:text-accent transition-all text-center" data-value="custom">
 											<svg class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 												<path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
 												<circle cx="12" cy="10" r="3"/>
@@ -525,6 +525,17 @@
 
 		<!-- Export: sticky footer, always visible, never clips -->
 		<div class="flex-shrink-0 tab-pane hidden p-6 border-t border-white/20 bg-black/20 max-md:border-none max-md:bg-transparent max-md:p-4" data-tab-content="export">
+
+			<!-- Resolution Selector -->
+			<div class="mb-5">
+				<span class="label-sm">Export Resolution</span>
+				<div class="flex gap-2 mt-2">
+					<button class="export-res-btn flex-1 py-2.5 text-[11px] font-bold rounded-xl border border-white/15 bg-accent text-white ring-2 ring-accent/30 transition-all" data-multiplier="1">HD <span class="opacity-70 font-normal">1×</span></button>
+					<button class="export-res-btn flex-1 py-2.5 text-[11px] font-bold rounded-xl border border-white/15 bg-white/10 text-white/80 transition-all hover:bg-white/20" data-multiplier="2">2K <span class="opacity-70 font-normal">2×</span></button>
+					<button class="export-res-btn flex-1 py-2.5 text-[11px] font-bold rounded-xl border border-white/15 bg-white/10 text-white/80 transition-all hover:bg-white/20" data-multiplier="4">4K <span class="opacity-70 font-normal">4×</span></button>
+				</div>
+			</div>
+
 			<button id="export-btn" class="w-full bg-black/30 group-hover:bg-accent hover:bg-accent text-white font-bold py-4 px-6 rounded-2xl shadow-xl shadow-slate-200 transition-all duration-300 flex items-center justify-center space-x-3 group active:scale-[0.98]">
 				<svg class="w-5 h-5 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

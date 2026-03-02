@@ -77,11 +77,30 @@ async function ensurePreviewReady() {
 	}
 }
 
+// Export resolution selector
+const exportResBtns = document.querySelectorAll('.export-res-btn');
+let exportMultiplier = 1;
+
+exportResBtns.forEach(btn => {
+	btn.addEventListener('click', () => {
+		exportMultiplier = parseInt(btn.dataset.multiplier) || 1;
+		exportResBtns.forEach(b => {
+			if (b === btn) {
+				b.classList.add('bg-accent', 'text-white', 'ring-2', 'ring-accent/30');
+				b.classList.remove('bg-white/10', 'text-white/80');
+			} else {
+				b.classList.remove('bg-accent', 'text-white', 'ring-2', 'ring-accent/30');
+				b.classList.add('bg-white/10', 'text-white/80');
+			}
+		});
+	});
+});
+
 exportBtn.addEventListener('click', async () => {
 	const filename = `Sthanam-${state.city.replace(/\s+/g, '-')}-${Date.now()}.png`;
 	setExportButtonLoading(true, 'processing');
 	try {
-		await exportToPNG(posterContainer, filename, null);
+		await exportToPNG(posterContainer, filename, exportMultiplier > 1 ? exportMultiplier : null);
 	} finally {
 		setExportButtonLoading(false);
 	}

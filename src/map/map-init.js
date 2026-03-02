@@ -38,6 +38,17 @@ const MARKER_ICONS = {
 		<svg class="marker-pin" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 			<circle cx="12" cy="12" r="2" />
 		</svg>
+	`,
+	dot: `
+		<svg class="marker-pin" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="12" cy="12" r="8"/>
+		</svg>
+	`,
+	custom: `
+		<svg class="marker-pin" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
+			<circle cx="12" cy="10" r="3"/>
+		</svg>
 	`
 };
 

@@ -50,14 +50,14 @@ export function setupControls() {
 			const p = paletteFor(theme);
 			const label = theme && theme.name ? theme.name : key;
 			return `
-				<button type="button" data-key="${key}" class="art-card group p-3 rounded-2xl border border-slate-100 bg-slate-50 flex flex-col items-center text-center hover:shadow-xl transition-all">
+				<button type="button" data-key="${key}" class="art-card group p-3 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm flex flex-col items-center text-center hover:bg-white/20 hover:border-white/30 transition-all">
 					<div class="flex items-center justify-center -space-x-2">
 						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[0]}"></span>
 						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[1]}"></span>
 						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[2]}"></span>
 						<span class="w-6 h-6 rounded-full ring-1 ring-white" style="background:${p[3]}"></span>
 					</div>
-					<div class="mt-3 text-[11px] font-semibold text-slate-900">${label}</div>
+					<div class="mt-3 text-[11px] font-semibold text-white">${label}</div>
 				</button>
 			`;
 		};
@@ -72,11 +72,11 @@ export function setupControls() {
 		cards.forEach(btn => {
 			btn.addEventListener('click', () => {
 				cards.forEach(c => {
-					c.classList.remove('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
-					c.classList.add('border-slate-100', 'bg-slate-50');
+					c.classList.remove('border-accent', 'bg-white/25', 'ring-2', 'ring-white/30');
+					c.classList.add('border-white/15', 'bg-white/10');
 				});
-				btn.classList.add('border-accent', 'bg-accent-light', 'ring-2', 'ring-accent', 'ring-offset-2');
-				btn.classList.remove('border-slate-100', 'bg-slate-50');
+				btn.classList.add('border-accent', 'bg-white/25', 'ring-2', 'ring-white/30');
+				btn.classList.remove('border-white/15', 'bg-white/10');
 
 				const k = btn.dataset.key;
 				updateState({ artisticTheme: k });
@@ -571,6 +571,16 @@ export function setupControls() {
 		});
 	}
 
+	// Pin option selection
+	const pinOptionBtns = document.querySelectorAll('.pin-option');
+	pinOptionBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			const icon = btn.dataset.value;
+			updateState({ markerIcon: icon });
+			updateMarkerStyles(state);
+		});
+	});
+
 	const overlayPosBtns = document.querySelectorAll('.overlay-pos-btn');
 	const overlayPositionGroup = document.getElementById('overlay-position-group');
 	overlayPosBtns.forEach(btn => {
@@ -735,11 +745,11 @@ export function setupControls() {
 			overlayBgButtons.forEach(b => {
 				const style = b.dataset.bg;
 				if (style === (currentState.overlayBgType || 'vignette')) {
-					b.classList.add('bg-accent', 'text-white');
-					b.classList.remove('bg-slate-50');
+					b.classList.add('bg-accent', 'text-white', 'ring-2', 'ring-accent/30');
+					b.classList.remove('bg-white/10', 'text-white/80');
 				} else {
-					b.classList.remove('bg-accent', 'text-white');
-					b.classList.add('bg-slate-50');
+					b.classList.remove('bg-accent', 'text-white', 'ring-2', 'ring-accent/30');
+					b.classList.add('bg-white/10', 'text-white/80');
 				}
 			});
 		}
@@ -747,11 +757,11 @@ export function setupControls() {
 			overlaySizeButtons.forEach(b => {
 				const s = b.dataset.size;
 				if (s === (currentState.overlaySize || 'medium')) {
-					b.classList.add('bg-accent', 'text-white');
-					b.classList.remove('bg-slate-50');
+					b.classList.add('bg-accent', 'text-white', 'ring-2', 'ring-accent/30');
+					b.classList.remove('bg-white/10', 'text-white/80');
 				} else {
-					b.classList.remove('bg-accent', 'text-white');
-					b.classList.add('bg-slate-50');
+					b.classList.remove('bg-accent', 'text-white', 'ring-2', 'ring-accent/30');
+					b.classList.add('bg-white/10', 'text-white/80');
 				}
 			});
 		}
@@ -772,11 +782,11 @@ export function setupControls() {
 			const currentIcon = currentState.markerIcon || 'pin';
 			pinOpts.forEach(p => {
 				if (p.dataset.value === currentIcon) {
-					p.classList.add('border-accent', 'bg-accent-light', 'text-accent');
-					p.classList.remove('border-slate-200', 'bg-white', 'text-slate-500');
+					p.classList.add('border-accent', 'bg-white/25', 'text-accent');
+					p.classList.remove('border-white/15', 'bg-white/10', 'text-white/70');
 				} else {
-					p.classList.remove('border-accent', 'bg-accent-light', 'text-accent');
-					p.classList.add('border-slate-200', 'bg-white', 'text-slate-500');
+					p.classList.remove('border-accent', 'bg-white/25', 'text-accent');
+					p.classList.add('border-white/15', 'bg-white/10', 'text-white/70');
 				}
 			});
 		}
