@@ -5,7 +5,7 @@ export async function searchLocation(query, opts = {}) {
 
 	try {
 		const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=${limit}&addressdetails=1`;
-		const response = await fetch(url, { signal, headers: { 'Accept': 'application/json' } });
+		const response = await fetch(url, { signal, headers: { 'Accept': 'application/json', 'User-Agent': 'SthanamMapCreator/1.0' } });
 		const data = await response.json();
 
 		return data.map(item => ({

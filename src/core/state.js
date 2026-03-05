@@ -90,6 +90,7 @@ function loadSettings() {
 		}
 		Object.assign(state, toApply);
 	} catch (e) {
+		console.warn('Failed to load settings from localStorage:', e);
 	}
 }
 
@@ -101,6 +102,7 @@ function saveSettings() {
 		}
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
 	} catch (e) {
+		console.warn('Failed to save settings to localStorage:', e);
 	}
 }
 
@@ -115,6 +117,9 @@ export function updateState(partialState) {
 export function subscribe(callback) {
 	observers.push(callback);
 	callback(state);
+	return () => {
+		observers = observers.filter(cb => cb !== callback);
+	};
 }
 
 function notifyObservers() {
