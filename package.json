@@ -1,22 +1,26 @@
 {
-	"name": "sthanam-map-creator",
-	"version": "1.0.0",
-	"type": "module",
+	"name": "sthanam",
+	"version": "2.0.0",
+	"private": true,
+	"description": "Sthanam - Map Art Marketplace",
+	"workspaces": [
+		"frontend",
+		"backend"
+	],
 	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
-	},
-	"dependencies": {
-		"@vercel/analytics": "^1.6.1",
-		"html2canvas": "^1.4.1",
-		"leaflet": "^1.9.4",
-		"maplibre-gl": "^5.18.0"
+		"dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+		"dev:frontend": "npm run dev --workspace=frontend",
+		"dev:backend": "npm run dev --workspace=backend",
+		"build": "npm run build --workspace=frontend && npm run build --workspace=backend",
+		"build:frontend": "npm run build --workspace=frontend",
+		"build:backend": "npm run build --workspace=backend",
+		"start": "npm run start --workspace=backend",
+		"lint": "npm run lint --workspace=frontend"
 	},
 	"devDependencies": {
-		"autoprefixer": "^10.4.24",
-		"postcss": "^8.5.6",
-		"tailwindcss": "3.4.1",
-		"vite": "^5.0.0"
+		"concurrently": "^9.1.0"
+	},
+	"dependencies": {
+		"playwright": "^1.59.1"
 	}
 }

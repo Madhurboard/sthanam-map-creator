@@ -1,56 +1,29 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
 # Dependencies
-node_modules
-.pnp
-.pnp.js
+node_modules/
 
-# Production / Build
-dist
-dist-ssr
-build
-*.local
+# Build
+dist/
+.next/
+out/
 
-# Environment variables
+# Environment
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
 
-# Testing
-coverage
-.nyc_output
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Caches
-.eslintcache
-.vite
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# OS generated files
+# OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Project specific
-instructions.md
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+.vercel

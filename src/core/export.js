@@ -1,4 +1,4 @@
-import html2canvas from 'html2canvas';
+	import html2canvas from 'html2canvas';
 import { getMapInstance, getArtisticMapInstance } from '../map/map-init.js';
 import { state, getSelectedTheme, getSelectedArtisticTheme } from './state.js';
 import { hexToRgba } from './utils.js';
