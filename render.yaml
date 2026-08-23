@@ -1,18 +1,20 @@
 # Render Blueprint for the Sthanam backend.
-# Render → New → Blueprint → point at this repo. Secrets are marked sync:false,
-# so Render prompts for them instead of reading them from this file.
+# Mirrors the manual service settings — keep the two in step.
 
 services:
   - type: web
     name: sthanam-backend
     runtime: node
     plan: free
-    # Closest Render region to Indian traffic.
+    # Singapore is the closest Render region to Indian traffic.
     region: singapore
     branch: main
-    # Built from the repo root so npm workspaces resolves the backend's deps.
-    buildCommand: npm ci && npm run build:backend
-    startCommand: npm run start --workspace=backend
+    # Built from backend/ rather than the repo root: this installs only the
+    # API's 113 packages instead of the whole frontend tree, which matters on
+    # a 512MB instance, and stops frontend-only commits triggering a rebuild.
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -22,13 +24,14 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_KEY
         sync: false
+      # Set to the literal word "placeholder" until Razorpay KYC clears: the
+      # service then boots with a warning and serves the free tier.
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
         sync: false
       - key: RAZORPAY_WEBHOOK_SECRET
         sync: false
-      # Comma-separated. Must include the Vercel production domain, and any
-      # preview domain you want to test payments from.
+      # Comma-separated CORS allowlist. Must include the Vercel domain.
       - key: FRONTEND_URL
         sync: false
