@@ -15,9 +15,9 @@ export interface Tier {
 }
 
 export const TIERS: Record<TierId, Tier> = {
-	standard: { id: 'standard', label: 'Standard', price: 99, multiplier: 1 },
-	large: { id: 'large', label: 'Large', price: 149, multiplier: 2 },
-	print: { id: 'print', label: 'Print', price: 249, multiplier: 4 },
+	standard: { id: 'standard', label: 'Standard', price: 10, multiplier: 1 },
+	large: { id: 'large', label: 'Large', price: 15, multiplier: 2 },
+	print: { id: 'print', label: 'Print', price: 20, multiplier: 4 },
 };
 
 export function getTier(id: string): Tier | null {
