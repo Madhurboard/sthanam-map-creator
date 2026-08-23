@@ -13,7 +13,7 @@ services:
     # API's 113 packages instead of the whole frontend tree, which matters on
     # a 512MB instance, and stops frontend-only commits triggering a rebuild.
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:
