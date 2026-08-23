@@ -29,7 +29,7 @@ const REQUIRED = [
 ] as const;
 
 /** Set once the placeholders are replaced with real credentials. */
-const PLACEHOLDER_MARKERS = ['your_', 'placeholder', 'changeme'];
+const PLACEHOLDER_MARKERS = ['your_', 'paste_', 'placeholder', 'changeme', '_here'];
 
 function validateEnv(): void {
 	const missing = REQUIRED.filter(key => !process.env[key]?.trim());
